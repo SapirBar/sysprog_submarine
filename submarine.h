@@ -29,20 +29,14 @@ typedef struct {
 
 
 Submarine *InitializeSubmarine(
-	int initial_depth, 
-	int initial_direction, 
-	int initial_torpedos_num
+	int initial_depth,
+	int initial_direction,
+	int initial_ammo
 );
 
 BOOL HandleRadarPicture(
 	Submarine *submarine, 
 	Radar *radar
-);
-
-BOOL GetCurrentCommandAndThreatenedFirends(
-	Submarine *submarine, 
-	SubmarineCommand *command, 
-	RadarObjectLinkedList *threatened_friends
 );
 
 BOOL FreeSubmarine(

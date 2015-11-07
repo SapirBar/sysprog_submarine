@@ -51,7 +51,7 @@ BOOL CalculateThreats(
 
 /* Return FALSE in case that the friends list threats is not updated.
  */
-BOOL GetRadarFriends(
+BOOL GetSubmarineFriends(
 	Radar *radar, 
 	RadarObjectLinkedList **friends
 );
@@ -61,7 +61,7 @@ BOOL EliminateFoe(
 	RadarObject *foe
 );
 
-BOOL IsThreatened(
+BOOL IsSubmarineThreatened(
 	Radar *radar
 );
 
