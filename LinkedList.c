@@ -9,6 +9,7 @@ LinkedList *InitializeLinkedList()
 	list = (LinkedList *)malloc(sizeof(*list));
 	if (list == NULL)
 	{
+		LOG_ERROR("Failed to allocate memory");
 		return NULL;
 	}
 	memset(list, '\0', sizeof(*list));
@@ -24,12 +25,14 @@ BOOL AddLinkedListEntry(LinkedList *list, void* entry)
 
 	if ((list == NULL) || (entry == NULL))
 	{
+		LOG_ERROR("Wrong parameters");
 		return FALSE;
 	}
 
 	new_entry = (ListNode *)malloc(sizeof(*new_entry));
 	if (new_entry == NULL)
 	{
+		LOG_ERROR("Failed to allocate memory");
 		return FALSE;
 	}
 	memset(new_entry, '\0', sizeof(*new_entry));
@@ -53,6 +56,7 @@ BOOL DeleteLinkedListEntry(LinkedList *list, void* entry)
 
 	if ((list == NULL) || (entry == NULL))
 	{
+		LOG_ERROR("Wrong parameters");
 		return FALSE;
 	}
 
@@ -92,6 +96,7 @@ BOOL FreeLinkedList(LinkedList *list)
 	ListNode *next = NULL;
 	if (list == NULL)
 	{
+		LOG_ERROR("Wrong parameters");
 		return FALSE;
 	}
 

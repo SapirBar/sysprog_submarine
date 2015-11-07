@@ -9,12 +9,26 @@ typedef struct {
 	FILE *output_file;
 } SubmarineOutputWriter;
 
-BOOL InitializeSubmarineOutputWriter(char *output_file_name, SubmarineOutputWriter **output_writer);
+SubmarineOutputWriter * InitializeSubmarineOutputWriter(
+	const char *output_file_name
+);
 
-void AddNewRound(SubmarineOutputWriter *output_writer);
+void AddNewRound(
+	SubmarineOutputWriter *output_writer
+);
 
-void WriteNewCommand(SubmarineOutputWriter *output_writer, SubmarineCommand *command);
+void WriteNewCommand(
+	SubmarineOutputWriter *output_writer, 
+	SubmarineCommand *command
+);
 
-void WriteWarningMessage(SubmarineOutputWriter *output_writer, char *threatened_friend);
+void WriteWarningMessage(
+	SubmarineOutputWriter *output_writer, 
+	char *threatened_friend
+);
+
+void CloseSubmarineOutputWriter(
+	SubmarineOutputWriter *output_writer
+);
 
 #endif
