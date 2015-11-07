@@ -26,10 +26,6 @@ Engineering, Winter 2011, by Amnon Drory.
 
 /*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
 
-int main() {
-
-}
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
