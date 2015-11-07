@@ -13,21 +13,21 @@ SubmarineOutputWriter * InitializeSubmarineOutputWriter(
 	const char *output_file_name
 );
 
-void AddNewRound(
+BOOL AddNewRound(
 	SubmarineOutputWriter *output_writer
 );
 
-void WriteNewCommand(
+BOOL WriteNewCommand(
 	SubmarineOutputWriter *output_writer, 
 	SubmarineCommand *command
 );
 
-void WriteWarningMessage(
+BOOL WriteWarningMessage(
 	SubmarineOutputWriter *output_writer, 
 	char *threatened_friend
 );
 
-void CloseSubmarineOutputWriter(
+BOOL CloseSubmarineOutputWriter(
 	SubmarineOutputWriter *output_writer
 );
 
