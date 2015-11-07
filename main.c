@@ -47,7 +47,7 @@ BOOL HandleParameters(
 	*output_file = argv[CMD_PARAMETER_OUTPUT_FILE_OFFSET];
 	
 	atoi_result = atoi(argv[CMD_PARAMETER_INIT_DIRECTION_OFFSET]);
-	if ((errno == ERANGE) || (errno == EINVAL))
+	if ((errno == ERANGE) || (errno == EINVAL) || (atoi_result < 0))
 	{
 		LOG_ERROR("Wrong intial direction parameter");
 		return FALSE;
@@ -55,7 +55,7 @@ BOOL HandleParameters(
 	*initial_direction = atoi_result;
 
 	atoi_result = atoi(argv[CMD_PARAMETER_INIT_DEPTH_OFFSET]);
-	if ((errno == ERANGE) || (errno == EINVAL))
+	if ((errno == ERANGE) || (errno == EINVAL) || (atoi_result < 0))
 	{
 		LOG_ERROR("Wrong intial depth parameter");
 		return FALSE;
@@ -63,7 +63,7 @@ BOOL HandleParameters(
 	*initial_depth = atoi_result;
 	
 	atoi_result = atoi(argv[CMD_PARAMETER_INIT_AMMO_OFFSET]);
-	if ((errno == ERANGE) || (errno == EINVAL))
+	if ((errno == ERANGE) || (errno == EINVAL) || (atoi_result < 0))
 	{
 		LOG_ERROR("Wrong intial ammo parameter");
 		return FALSE;
@@ -110,7 +110,7 @@ BOOL HandleInputFileLine(
 	}
 
 	atoi_result = atoi(words_arr[INPUT_FILE_DIRECTION_OFFSET]);
-	if ((errno == ERANGE) || (errno == EINVAL))
+	if ((errno == ERANGE) || (errno == EINVAL) || (atoi_result < 0))
 	{
 		LOG_ERROR("Wrong direction value");
 		return FALSE;
@@ -118,7 +118,7 @@ BOOL HandleInputFileLine(
 	*direction = atoi_result;
 
 	atoi_result = atoi(words_arr[INPUT_FILE_DISTANCE_OFFSET]);
-	if ((errno == ERANGE) || (errno == EINVAL))
+	if ((errno == ERANGE) || (errno == EINVAL) || (atoi_result < 0))
 	{
 		LOG_ERROR("Wrong dstance value");
 		return FALSE;
