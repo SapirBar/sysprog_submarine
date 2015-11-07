@@ -2,6 +2,7 @@
 #define SUBMARINE_H
 
 #include "Radar.h"
+#include "SubmarineOutputWriter.h"
 
 #define SUBMARINE_LOW_DEPTH 100
 #define SUBMARINE_DEEP_DEPTH 200
@@ -13,6 +14,7 @@ typedef struct {
 	int depth;
 	int direction;
 	int ammo;	//the amount of torpedos
+	SubmarineOutputWriter *submarine_output_writer
 } Submarine;
 
 typedef enum {
@@ -29,20 +31,14 @@ typedef struct {
 
 
 Submarine *InitializeSubmarine(
-	int initial_depth, 
-	int initial_direction, 
-	int initial_torpedos_num
+	int initial_depth,
+	int initial_direction,
+	int initial_ammo
 );
 
 BOOL HandleRadarPicture(
 	Submarine *submarine, 
 	Radar *radar
-);
-
-BOOL GetCurrentCommandAndThreatenedFirends(
-	Submarine *submarine, 
-	SubmarineCommand *command, 
-	RadarObjectLinkedList *threatened_friends
 );
 
 BOOL FreeSubmarine(

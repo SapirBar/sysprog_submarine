@@ -76,8 +76,6 @@ BOOL EliminateFoe(
 	RadarObject *foe //A pointer to a foe need to eliminate.
 );
 
-
-
 // The Submarine is threated if there is a sheep in distance of less than 500 
 //return TRUE-if the submarine is threated by a sheep; FALSE- if the submarine is not treated by a sheep
 
