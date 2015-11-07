@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
 	int initial_ammo = 0;
 	Submarine *submarine = NULL;
 	TextFileReader reader;
-	SubmarineOutputWriter *output_writer;
+	SubmarineOutputWriter *output_writer = NULL;
 	BOOL simulation_result = FALSE;
 	ErrorCode error_code = SUCCESS;
 
