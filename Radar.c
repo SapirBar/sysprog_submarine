@@ -8,7 +8,7 @@
 
 BOOL FreeRadarList (LinkedList * list);
 double OclideDistance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2);
-
+unsigned int RelativeAngle (unsigned int absolute_dir1, unsigned int absolute_dir2);
 Radar *InitializeRadar()
 {
 	Radar *radar_picture = NULL;
@@ -116,41 +116,57 @@ BOOL CalculateThreats(
 		return FALSE;
 	}
 	current_friend = (RadarListNode *) radar->friends->head;
-	while (current_friend != NULL) //For eac
+	while (current_friend != NULL) //For each friend in the list of friends
 		{
 			current_foe = (RadarListNode *) radar->foes->head;
-			while (current_foe != NULL)
+			while (current_foe != NULL) //scanning each foe in the enemy foe
 			{
-				current_foe = current_foe->next;
 				curr_distance = OclideDistance(current_foe->entry->distance,current_foe->entry->direction,current_friend->entry->distance,current_friend->entry->direction);
 				if (curr_distance < min_distance) // found an enemy threats a friend ship closer to the friend ship (min_distance initialized to 1000) 
 				{
 					min_distance=curr_distance;
-				//update the fields for the friends
+				    //update the fields in the friend entry in case there is an enemy threats
+					current_friend->entry->threat_distance = min_distance;
+					current_friend->entry->most_threatening_foe = current_foe->entry;
 				}
+				if (curr_distance ==  min_distance)
+				{    //compare between the relative angle of the current foe and the previos foe
+					 //with the same distance from the friend ship
+					if(RelativeAngle(current_foe->entry->direction,submarine_direction) < RelativeAngle(current_friend->entry->most_threatening_foe->direction, submarine_direction))
+						{
+							//update the threated foe is his relative angle is smaller than the previous
+							current_friend->entry->most_threatening_foe = current_foe->entry;
+					    }
+				}
+				current_foe = current_foe->next;
 			}
 			current_friend = current_friend->next;
 	    }
-	radar->is_friends_list_updated = TRUE;
+	radar->is_friends_list_updated = TRUE; //after scanning all the friends, the list is updated.
 	return TRUE;
 }
 
+//Computing the oclide distance using the distance from the radar and the absolute direction from north
 double OclideDistance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2)
 {
 	double alpha = 0;
 	double oclide_distance = 0;
-	(dir1>dir2)?(alpha=(double)(dir1-dir2)):(alpha=(double)(dir2-dir1));
-	if (alpha > 180 ) 
-	{
-		alpha = 360 - alpha;
-	}
+	alpha = (double)RelativeAngle (dir1, dir2);
 	//computing the oclide distance using the cosinos statement. 
 	oclide_distance = 2*dist1*dist2*cos(alpha);
 	oclide_distance = sqrt (dist1*dist1+dist2*dist2-oclide_distance);
 	return (oclide_distance);
 }
-
-
+unsigned int RelativeAngle (unsigned int absolute_dir1, unsigned int absolute_dir2) 
+{
+	unsigned int rel_angle = 0;
+	(absolute_dir1>absolute_dir2)?(rel_angle=(absolute_dir1-absolute_dir2)):(rel_angle=(absolute_dir2-absolute_dir1));
+	if (rel_angle > 180)
+	{
+		rel_angle = 360 - rel_angle;
+	}
+	return rel_angle;
+}
 
 BOOL IsSubmarineThreatened(
 	Radar *radar
