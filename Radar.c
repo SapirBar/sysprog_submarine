@@ -66,14 +66,14 @@ BOOL AddRadarObject(
 	new_radar_object->type = type;
 	lenght_name = strlen (name);
 		//malloc and copy the name string
-	new_radar_object->name = (char *) malloc (sizeof(int)*lenght_name);
+	new_radar_object->name = (char *) malloc (sizeof(int)*(lenght_name+1));
 	if (new_radar_object->name == NULL)
 	{
 		LOG_ERROR ("failed to malloc memory");
 		free (new_radar_object);
 		return FALSE;
 	}
-	strcpy(new_radar_object->name,name);
+	memcpy(new_radar_object->name, name, lenght_name+1);
 	new_radar_object->direction = direction;
 	new_radar_object->distance = distance;
 	new_radar_object->most_threatening_foe = NULL;

@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
 	int initial_ammo = 0;
 	Submarine *submarine = NULL;
 	TextFileReader reader;
-	SubmarineOutputWriter *output_writer;
+	SubmarineOutputWriter *output_writer = NULL;
 	BOOL simulation_result = FALSE;
 	ErrorCode error_code = SUCCESS;
 
@@ -244,7 +244,12 @@ int main(int argc, char *argv[])
 			 Initial Direction = %d \r\n \
 			 Initial Depth = %d \r\n \
 			 Initial Ammo = %d \r\n \
-			 Output File = %s"
+			 Output File = %s",
+			 input_file,
+			 initial_direction,
+			 initial_depth,
+			 initial_ammo,
+			 output_file
 	);
 
 	// Create the input file reader
