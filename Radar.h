@@ -53,7 +53,7 @@ BOOL CalculateThreats(
  */
 BOOL GetRadarFriends(
 	Radar *radar, 
-	RadarObjectLinkedList *friends
+	RadarObjectLinkedList **friends
 );
 
 BOOL EliminateFoe(
