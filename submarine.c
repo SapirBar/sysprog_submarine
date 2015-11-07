@@ -30,7 +30,7 @@ Submarine *InitializeSubmarine(
 BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 	
 	RadarListNode *most_threatened_friend = NULL;
-	char foe_to_shoot;
+	struct RadarObject_s *foe_to_shoot;
 	float min_threat_distance = INVALID_DISTANCE;
 	unsigned int temp_new_direction;
 	RadarListNode *node = NULL;
