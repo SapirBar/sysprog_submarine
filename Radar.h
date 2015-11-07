@@ -39,7 +39,7 @@ Radar *InitializeRadar();
 
 BOOL AddRadarObject(
 	Radar *radar, 
-	char *name, 
+	const char *name, 
 	RadarObjectType type, 
 	unsigned int direction,
 	unsigned int distance
