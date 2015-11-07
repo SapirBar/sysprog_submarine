@@ -105,7 +105,7 @@ return TRUE;
 
 BOOL CalculateThreats(
 	Radar *radar,
-	unsigned int submarine_direction //if there are two treating sheeps in the same priority, we need to choose the sheep which her relative direction from the submrine is minimal.
+	unsigned int submarine_direction //if there are two treating sheeps in the same priority, we need to choose the ship which her relative direction from the submrine is minimal.
 )
 {
 	RadarListNode *current_friend = NULL, *current_foe = NULL;
@@ -118,6 +118,9 @@ BOOL CalculateThreats(
 	current_friend = (RadarListNode *) radar->friends->head;
 	while (current_friend != NULL) //For each friend in the list of friends
 		{
+			//initialized the foe enemy (dealing the case we fire the enemy and calling the function for second time)
+			current_friend->entry->most_threatening_foe=NULL;
+			current_friend->entry->threat_distance = INVALID_DISTANCE;
 			current_foe = (RadarListNode *) radar->foes->head;
 			while (current_foe != NULL) //scanning each foe in the enemy foe
 			{
@@ -134,7 +137,7 @@ BOOL CalculateThreats(
 					 //with the same distance from the friend ship
 					if(RelativeAngle(current_foe->entry->direction,submarine_direction) < RelativeAngle(current_friend->entry->most_threatening_foe->direction, submarine_direction))
 						{
-							//update the threated foe is his relative angle is smaller than the previous
+							//update the threated foe if his relative angle is smaller than the previous
 							current_friend->entry->most_threatening_foe = current_foe->entry;
 					    }
 				}
