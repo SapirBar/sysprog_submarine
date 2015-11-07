@@ -53,7 +53,7 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 	//if submarine has ammo, check if there is a friend in danger
 	else {
 		//getting information from radar
-		CalculateThreats(radar);
+		CalculateThreats(radar, submarine->direction);
 		GetSubmarineFriends(radar, &friends);
 		
 		//initializing variables
@@ -66,7 +66,7 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 		for (node = friends->head; node != NULL; node = node->next)
 		{
 			//checking wether current node's threat distance is less than seen so far, and with the case of two friends that their threat_distance equals
-			if ((node->entry->threat_distance < min_threat_distance)||((node->entry->threat_distance == min_threat_distance) && (node->entry->most_threatening_foe->direction < new_direction)&&(min_threat_distance != INVALID_DISTANCE)))
+			if ((node->entry->threat_distance < min_threat_distance)||((node->entry->threat_distance == min_threat_distance) && (node->entry->most_threatening_foe->direction < temp_new_direction)&&(min_threat_distance != INVALID_DISTANCE)))
 			{
 					are_there_foes = TRUE;
 					temp_new_direction = node->entry->most_threatening_foe->direction;
@@ -86,8 +86,14 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 		EliminateFoe(radar, foe_to_shoot);
 	}
 
+	//update submarine object fields
+	submarine->ammo = submarine_command->new_ammo;
+	submarine->depth = submarine_command->new_depth;
+	submarine->direction = submarine_command->new_direction;
+	submarine->submarine_output_writer = submarine_output_writer;
+
 	//calculate threats again		
-	CalculateThreats(radar);
+	CalculateThreats(radar,submarine->direction);
 
 	// Warn threatened friends
 	for (node = friends->head; node != NULL; node = node->next)
@@ -109,11 +115,6 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 
 		// update already seen friends
 
-	//update submarine object fields
-	submarine->ammo = submarine_command->new_ammo;
-	submarine->depth = submarine_command->new_depth;
-	submarine->direction = submarine_command->new_direction;
-	submarine->submarine_output_writer = submarine_output_writer;
 }
 
 BOOL FreeSubmarine(Submarine *submarine)
