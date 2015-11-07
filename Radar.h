@@ -3,7 +3,7 @@
 
 #include "LinkedList.h"
 #include "common.h"
-
+#define INVALID_DISTANCE (1001)
 typedef enum {
 	FRIEND=0,
 	FOE
@@ -30,23 +30,35 @@ typedef struct {
 } RadarObjectLinkedList;
 
 typedef struct Radar_s {
-	RadarObjectLinkedList friends;
-	RadarObjectLinkedList foes;
+	LinkedList *friends;
+	LinkedList *foes;
 	BOOL is_friends_list_updated;
 } Radar;
-
+// This function crating a new radar image, containing two list: Friends and foes list, each one is emppty. 
+//The return value is a pointer for Radar structure.
 Radar *InitializeRadar();
 
+//This function is creating a new object in the radar image, 
+//Poping it to the foe list or frinds list according to the type of the object
+//Return FALSE in case the function faild to insert the new object
 BOOL AddRadarObject(
-	Radar *radar, 
-	const char *name, 
-	RadarObjectType type, 
-	unsigned int direction,
-	unsigned int distance
+	Radar *radar,             //Pointer to Radar structure (created by InitializeRadar function)
+	char *name,               //The name of the sheep
+	RadarObjectType type,     //gets: FOE or FRIEND
+	unsigned int direction,   //The direction of the sheep
+	unsigned int distance     //The distance of the sheep
 );
 
+
+//Update the radar friends list,
+//finding the most threating foe for each friend in the friends list, 
+//if there are two treating sheeps in the same priority,
+//we need to choose the sheep which her relative direction from the submrine is minimal.
+// if there are no foes threating the friend sheep, the friend sheep field most_threatening_foe will remain NULL 
+//and the threat_distance will remain INVALID_DISTANCE
 BOOL CalculateThreats(
-	Radar *radar
+	Radar *radar,
+	unsigned int submarine_direction //  
 );
 
 /* Return FALSE in case that the friends list threats is not updated.
@@ -56,15 +68,22 @@ BOOL GetSubmarineFriends(
 	RadarObjectLinkedList **friends
 );
 
+//Receive a radar picture (list of foe and frineds) and a pointer to the foe object
+//remove the foe from the list and free the memory
+//if succeeds return true.
 BOOL EliminateFoe(
-	Radar *radar,
-	RadarObject *foe
+	Radar *radar, //A pointer to radar picture containing the foes and friends lists.
+	RadarObject *foe //A pointer to a foe need to eliminate.
 );
+
+// The Submarine is threated if there is a sheep in distance of less than 500 
+//return TRUE-if the submarine is threated by a sheep; FALSE- if the submarine is not treated by a sheep
 
 BOOL IsSubmarineThreatened(
-	Radar *radar
+	Radar *radar //Radar object pointer (contain pointer to the foe list)
 );
 
+//free all memory allocated for the radar picture;
 BOOL FreeRadar(
 	Radar *radar
 );
