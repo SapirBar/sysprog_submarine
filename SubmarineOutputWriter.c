@@ -34,24 +34,27 @@ SubmarineOutputWriter *InitializeSubmarineOutputWriter(
 	return output_writer;
 }
 
-void AddNewRound(
+BOOL AddNewRound(
 	SubmarineOutputWriter *output_writer
 ) {
 	if (output_writer == NULL) 
 	{
 		LOG_ERROR("Wrong parameters");
+		return FALSE;
 	}
 
 	fprintf(output_writer->output_file, "\r\n");
+	return TRUE;
 }
 
-void WriteNewCommand(
+BOOL WriteNewCommand(
 	SubmarineOutputWriter *output_writer, 
 	SubmarineCommand *command
 ) {
 	if ((output_writer == NULL) || (command == NULL))
 	{
 		LOG_ERROR("Wrong parameters");
+		return FALSE;
 	}
 
 	fprintf(
@@ -62,16 +65,37 @@ void WriteNewCommand(
 		FIRE_COMMANDS_STRINGS[command->fire_command],
 		command->new_ammo
 	);
+	return TRUE;
 }
 
-void WriteWarningMessage(
+BOOL WriteWarningMessage(
 	SubmarineOutputWriter *output_writer, 
 	char *threatened_friend
 ) {
+	if ((output_writer == NULL) || (threatened_friend == NULL))
+	{
+		LOG_ERROR("Wrong parameters");
+		return FALSE;
+	}
 
+	fprintf(
+		output_writer->output_file,
+		"Ship %s is in danger\r\n",
+		threatened_friend
+	);
+	return TRUE;
 }
 
-void CloseSubmarineOutputWriter(
+BOOL CloseSubmarineOutputWriter(
 	SubmarineOutputWriter *output_writer
 ) {
+	if (output_writer == NULL)
+	{
+		LOG_ERROR("Wrong parameters");
+		return FALSE;
+	}
+	fclose(output_writer->output_file);
+	free(output_writer);
+
+	return TRUE;
 }
