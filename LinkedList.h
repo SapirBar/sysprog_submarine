@@ -16,14 +16,18 @@ typedef struct {
 
 LinkedList *InitializeLinkedList();
 
-BOOL AddLinkedListEntry(LinkedList *list, void* entry);
+BOOL AddLinkedListEntry(
+	LinkedList *list, 
+	void* entry
+);
 
-BOOL DeleteLinkedListEntry(LinkedList *list, void* entry);
+BOOL DeleteLinkedListEntry(
+	LinkedList *list, 
+	void* entry
+);
 
-//ListNode *GetFirstLinkedListEntry(ListNode *list);
-
-//ListNode *GetFirstLinkedNextEntry(ListNode *list);
-
-BOOL FreeLinkedList(LinkedList *list);
+BOOL FreeLinkedList(
+	LinkedList *list
+);
 
 #endif //LINKED_LIST_H

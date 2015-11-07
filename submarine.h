@@ -1,5 +1,3 @@
-
-
 #ifndef SUBMARINE_H
 #define SUBMARINE_H
 
@@ -11,13 +9,13 @@
 /*
 	basic field of struct Submarine
 */
-struct Submarine {
+typedef struct {
 	
 	int depth;
 	int direction;
 	int ammo;	//the amount of torpedos 
 
-};
+} Submarine;
 
 
 
