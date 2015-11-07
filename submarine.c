@@ -24,64 +24,93 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 	
 	RadarListNode *most_threatened_friend = NULL;
 	char foe_to_shoot;
-	float min_threat_distance;
-	unsigned int new_direction;
-	RadarObjectLinkedList *friends = NULL;
-	SubmarineCommand *submarine_command = NULL;
+	float min_threat_distance = INVALID_DISTANCE;
+	unsigned int temp_new_direction;
 	RadarListNode *node = NULL;
-	submarine_command = (SubmarineCommand *)malloc(sizeof(submarine_command));
 
-	// Check if we need to fire
+	RadarObjectLinkedList *friends = NULL;
+	BOOL are_there_foes = FALSE;
+
+	SubmarineCommand *submarine_command = NULL;
+	SubmarineOutputWriter *submarine_output_writer = NULL;
 	
+	// Check if submarine is in danger
 	if (IsSubmarineThreatened && (submarine->depth == SUBMARINE_LOW_DEPTH)) {
 		submarine_command->new_depth = SUBMARINE_DEEP_DEPTH;
 	}
-	// CEASE - if AMMO == 0
-	if (submarine->ammo == 0) {
-		submarine_command->fire_command = CEASE;
-	}	
-	
-	// FIRE - if there is a threatened ship
-	//getting information from radar
-	CalculateThreats(radar);
-	GetSubmarineFriends(radar, &friends);
-	
-	//calculating most threatening foe of all foes 
-	min_threat_distance = friends->head->entry->threat_distance;
-	foe_to_shoot = friends->head->entry->most_threatening_foe;
-	new_direction = friends->head->entry->most_threatening_foe->direction;
-	most_threatened_friend = friends->head;
-	for (node = friends->head; node == friends->tail; node = node->next)
+	// Check if submarine is out of ammo
+	if (submarine->ammo == 0)
 	{
-		//dealing with the case of two friend ships that their threat_distance equals
-		if (node->entry->threat_distance == min_threat_distance)
+		submarine_command->fire_command = CEASE;
+	}
+	//if submarine has ammo, check if there is a friend in danger
+	else {
+		//getting information from radar
+		CalculateThreats(radar);
+		GetSubmarineFriends(radar, &friends);
+		
+		//initializing variables
+		min_threat_distance = friends->head->entry->threat_distance;
+		foe_to_shoot = friends->head->entry->most_threatening_foe;
+		temp_new_direction = friends->head->entry->most_threatening_foe->direction;
+		most_threatened_friend = friends->head;
+		
+		//calculating most threatening foe of all foes
+		for (node = friends->head; node != NULL; node = node->next)
 		{
-			if(node->entry->most_threatening_foe->direction < new_direction)
+			//checking wether current node's threat distance is less than seen so far, and with the case of two friends that their threat_distance equals
+			if ((node->entry->threat_distance < min_threat_distance)||((node->entry->threat_distance == min_threat_distance) && (node->entry->most_threatening_foe->direction < new_direction)&&(min_threat_distance != INVALID_DISTANCE)))
+			{
+					are_there_foes = TRUE;
+					temp_new_direction = node->entry->most_threatening_foe->direction;
+					foe_to_shoot = node->entry->most_threatening_foe;
+					min_threat_distance = node->entry->threat_distance;
+					most_threatened_friend = node;
+			}
 		}
-		if (node->entry->threat_distance < min_threat_distance)
+		submarine_command->new_direction = temp_new_direction;
+	}
+
+	// Eliminate target from Radar if necessary
+	if (min_threat_distance != INVALID_DISTANCE)
+	{
+		submarine_command->fire_command = FIRE;
+		submarine_command->new_ammo = (submarine->ammo) - 1;
+		EliminateFoe(radar, foe_to_shoot);
+	}
+
+	//calculate threats again		
+	CalculateThreats(radar);
+
+	// Warn threatened friends
+	for (node = friends->head; node != NULL; node = node->next)
+	{
+		if (node->entry->threat_distance != INVALID_DISTANCE)
 		{
-			min_threat_distance = node->entry->threat_distance;
-			foe_to_shoot = node->entry->most_threatening_foe;
-			new_direction = node->entry->most_threatening_foe->direction;
-			most_threatened_friend = node;
+			WriteWarningMessage(submarine_output_writer, most_threatened_friend);
 		}
 	}
 
-
-			// set AMMO-=1, NEW_DIRECTION
-			// don't change DEPTH
-			// Eliminate target from Radar
-			//calculate threats again		
-
-	// Warn threatened friends
-
 	// If there are no enemies
-		// Calculate NEW_DIRECTION
-			// Use already_see_friends
-		// Set DEPTH to 100
+//	if (are_there_foes == FALSE && )
+//	{
+		// Calculate NEW_DIRECTION (change in submarine_command)
+		// Use already_see_friends
+		// Set DEPTH to 100 (change in submarine_command)
+//	}
+	
 
 		// update already seen friends
-		//update submarine object fields
 
-
+	//update submarine object fields
+	submarine->ammo = submarine_command->new_ammo;
+	submarine->depth = submarine_command->new_depth;
+	submarine->direction = submarine_command->new_direction;
+	submarine->submarine_output_writer = submarine_output_writer;
 }
+
+BOOL FreeSubmarine(Submarine *submarine)
+{
+	free(submarine);
+}
+
