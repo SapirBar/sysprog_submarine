@@ -4,7 +4,10 @@
 #include "LinkedList.h"
 #include <string.h>
 #include "common.h"
+#include <math.h>
+
 BOOL FreeRadarList (LinkedList * list);
+double Oclide_distance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2);
 
 Radar *InitializeRadar()
 {
@@ -47,7 +50,7 @@ BOOL AddRadarObject(
 )
 {
 	RadarObject *new_radar_object=NULL;
-
+	int lenght_name = 0;
 	if (radar == NULL)
 	{
 		LOG_ERROR("cann't add object to Radar: radar object not intialized!") ;
@@ -59,18 +62,18 @@ BOOL AddRadarObject(
 		LOG_ERROR("failed to allocate memory");
 		return FALSE; 
 	}
-	if (direction < 0)
-	{
-		LOG_ERROR("illegal value of direction for sheep %s ", &name);
-		return FALSE; 
-	}
-		if (distance < 0)
-	{
-		LOG_ERROR("illegal value of distance for sheep %s ", &name);
-		return FALSE; 
-	}
+
 	new_radar_object->type = type;
-	new_radar_object->name = name;
+	lenght_name = strlen (name);
+		//malloc and copy the name string
+	new_radar_object->name = (char *) malloc (sizeof(int)*lenght_name);
+	if (new_radar_object->name == NULL)
+	{
+		LOG_ERROR ("failed to malloc memory");
+		free (new_radar_object);
+		return FALSE;
+	}
+	strcpy(new_radar_object->name,name);
 	new_radar_object->direction = direction;
 	new_radar_object->distance = distance;
 	new_radar_object->most_threatening_foe = NULL;
@@ -80,7 +83,8 @@ BOOL AddRadarObject(
 		if (AddLinkedListEntry(radar->foes,new_radar_object) == FALSE)
 		{
 			LOG_ERROR("failed to add a foe to the list");
-			free (new_radar_object);     //free the memory allocated in this function and return
+			free (new_radar_object->name); //free the memory allocated in this function and return
+			free (new_radar_object);     
 			return FALSE;
 		}
 	}
@@ -89,7 +93,8 @@ BOOL AddRadarObject(
 		if (AddLinkedListEntry(radar->friends,new_radar_object) == FALSE)
 		{
 			LOG_ERROR("failed to add a friend to the list");
-			free (new_radar_object);     //free the memory allocated in this function and return
+			free (new_radar_object->name); //free the memory allocated in this function and return
+			free (new_radar_object);
 			return FALSE;
 		}
 	}
@@ -104,15 +109,42 @@ BOOL CalculateThreats(
 )
 {
 	RadarListNode *current_friend = NULL, *current_foe = NULL;
+	unsigned int min_distance = INVALID_DISTANCE, curr_distance = 0;
 	if (radar == NULL || radar->friends == NULL || radar->foes == NULL)
 	{
 		LOG_ERROR ("radar picture is empty");
 		return FALSE;
 	}
-	if (radar->friends
+	current_friend = (RadarListNode *) radar->friends->head;
+	while (current_friend != NULL) //For eac
+		{
+			current_foe = (RadarListNode *) radar->foes->head;
+			while (current_foe != NULL)
+			{
+
+				current_foe = current_foe->next;
+			}
+			current_friend = current_friend->next;
+	    }
 	radar->is_friends_list_updated = TRUE;
 	return TRUE;
 }
+
+double Oclide_distance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2)
+{
+	double alpha = 0;
+	double oclide_distance = 0;
+	(dir1>dir2)?(alpha=(double)(dir1-dir2)):(alpha=(double)(dir2-dir1));
+	if (alpha > 180 ) 
+	{
+		alpha = 360 - alpha;
+	}
+	//computing the oclide distance using the cosinos statement. 
+	oclide_distance = 2*dir1*dir2*cos(alpha);
+	oclide_distance = sqrt (dir1*dir1+dir2*dir2-oclide_distance);
+	return (oclide_distance);
+}
+
 
 
 BOOL IsSubmarineThreatened(
@@ -162,6 +194,7 @@ BOOL EliminateFoe(
 		if (current_foe_node->entry == foe)
 		{
 			DeleteLinkedListEntry(radar->foes,foe);//eliminate the node from the list memory and free the memory
+			free (foe->name); //free the memory holding the name of the foe (string)
 			free (foe);
 			radar->is_friends_list_updated=FALSE;//After eliminating the foe, the list of the friends is not updated because the foe is not potential threat for the friends sheeps anymore.
 			return TRUE;
@@ -225,6 +258,7 @@ BOOL FreeRadarList (LinkedList * list)
 		current_radar_object= (RadarListNode *)list->head;
 		while (current_radar_object != NULL)
 		{                 
+			free (current_radar_object->entry->name); //free the memory malloc for the string holsing the name
 			free (current_radar_object->entry);   //free each radar object in the list
 			current_radar_object=current_radar_object->next;
 		}
