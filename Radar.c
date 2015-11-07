@@ -7,7 +7,7 @@
 #include <math.h>
 
 BOOL FreeRadarList (LinkedList * list);
-double Oclide_distance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2);
+double OclideDistance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2);
 
 Radar *InitializeRadar()
 {
@@ -109,7 +109,7 @@ BOOL CalculateThreats(
 )
 {
 	RadarListNode *current_friend = NULL, *current_foe = NULL;
-	unsigned int min_distance = INVALID_DISTANCE, curr_distance = 0;
+	double min_distance = INVALID_DISTANCE, curr_distance = 0;
 	if (radar == NULL || radar->friends == NULL || radar->foes == NULL)
 	{
 		LOG_ERROR ("radar picture is empty");
@@ -121,8 +121,13 @@ BOOL CalculateThreats(
 			current_foe = (RadarListNode *) radar->foes->head;
 			while (current_foe != NULL)
 			{
-
 				current_foe = current_foe->next;
+				curr_distance = OclideDistance(current_foe->entry->distance,current_foe->entry->direction,current_friend->entry->distance,current_friend->entry->direction);
+				if (curr_distance < min_distance) // found an enemy threats a friend ship closer to the friend ship (min_distance initialized to 1000) 
+				{
+					min_distance=curr_distance;
+				//update the fields for the friends
+				}
 			}
 			current_friend = current_friend->next;
 	    }
@@ -130,7 +135,7 @@ BOOL CalculateThreats(
 	return TRUE;
 }
 
-double Oclide_distance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2)
+double OclideDistance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2)
 {
 	double alpha = 0;
 	double oclide_distance = 0;
@@ -140,8 +145,8 @@ double Oclide_distance ( unsigned int dist1, unsigned int dir1, unsigned int dis
 		alpha = 360 - alpha;
 	}
 	//computing the oclide distance using the cosinos statement. 
-	oclide_distance = 2*dir1*dir2*cos(alpha);
-	oclide_distance = sqrt (dir1*dir1+dir2*dir2-oclide_distance);
+	oclide_distance = 2*dist1*dist2*cos(alpha);
+	oclide_distance = sqrt (dist1*dist1+dist2*dist2-oclide_distance);
 	return (oclide_distance);
 }
 
