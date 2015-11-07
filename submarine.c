@@ -28,7 +28,7 @@ Submarine *InitializeSubmarine(
 }
 
 BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
-	
+	//This function decides what actions to take, considering the radar picture. It also updates the submarine_command and the submarine entities. Returns FALSE if there is an error, else returns TRUE.
 	RadarListNode *most_threatened_friend = NULL;
 	struct RadarObject_s *foe_to_shoot = NULL;
 	double min_threat_distance = INVALID_DISTANCE;
