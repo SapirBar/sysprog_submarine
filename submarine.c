@@ -30,8 +30,8 @@ Submarine *InitializeSubmarine(
 BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 	
 	RadarListNode *most_threatened_friend = NULL;
-	struct RadarObject_s *foe_to_shoot;
-	float min_threat_distance = INVALID_DISTANCE;
+	struct RadarObject_s *foe_to_shoot = NULL;
+	double min_threat_distance = INVALID_DISTANCE;
 	unsigned int temp_new_direction;
 	RadarListNode *node = NULL;
 
@@ -100,9 +100,11 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 	{
 		if (node->entry->threat_distance != INVALID_DISTANCE)
 		{
-			WriteWarningMessage(submarine_output_writer, most_threatened_friend);
+			WriteWarningMessage(submarine_output_writer, most_threatened_friend->entry->name);
 		}
 	}
+
+	return TRUE;
 
 	// If there are no enemies
 //	if (are_there_foes == FALSE && )
@@ -119,6 +121,12 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 
 BOOL FreeSubmarine(Submarine *submarine)
 {
+	if (submarine == NULL)
+	{
+		LOG_ERROR("Wrong parametes");
+		return FALSE;
+	}
 	free(submarine);
+	return TRUE;
 }
 
