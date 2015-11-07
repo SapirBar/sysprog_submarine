@@ -30,8 +30,8 @@ typedef struct {
 } RadarObjectLinkedList;
 
 typedef struct Radar_s {
-	RadarObjectLinkedList friends;
-	RadarObjectLinkedList foes;
+	RadarObjectLinkedList *friends;
+	RadarObjectLinkedList *foes;
 	BOOL is_friends_list_updated;
 } Radar;
 
