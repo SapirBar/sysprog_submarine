@@ -15,7 +15,7 @@ typedef struct RadarObject_s{
 	unsigned int direction;
 	unsigned int distance;
 	struct RadarObject_s *most_threatening_foe;
-	float threat_distance;
+	double threat_distance;
 } RadarObject;
 
 typedef struct RadarListNode_s {
@@ -43,18 +43,18 @@ Radar *InitializeRadar();
 //Return FALSE in case the function faild to insert the new object
 BOOL AddRadarObject(
 	Radar *radar,             //Pointer to Radar structure (created by InitializeRadar function)
-	char *name,               //The name of the sheep
+	char *name,               //The name of the ship
 	RadarObjectType type,     //gets: FOE or FRIEND
-	unsigned int direction,   //The direction of the sheep
-	unsigned int distance     //The distance of the sheep
+	unsigned int direction,   //The direction of the ship
+	unsigned int distance     //The distance of the ship
 );
 
 
 //Update the radar friends list,
 //finding the most threating foe for each friend in the friends list, 
-//if there are two treating sheeps in the same priority,
-//we need to choose the sheep which her relative direction from the submrine is minimal.
-// if there are no foes threating the friend sheep, the friend sheep field most_threatening_foe will remain NULL 
+//if there are two treating ships in the same priority,
+//we need to choose the ship which her relative direction from the submrine is minimal.
+// if there are no foes threating the friend ship, the friend ship field most_threatening_foe will remain NULL 
 //and the threat_distance will remain INVALID_DISTANCE
 BOOL CalculateThreats(
 	Radar *radar,
@@ -76,8 +76,8 @@ BOOL EliminateFoe(
 	RadarObject *foe //A pointer to a foe need to eliminate.
 );
 
-// The Submarine is threated if there is a sheep in distance of less than 500 
-//return TRUE-if the submarine is threated by a sheep; FALSE- if the submarine is not treated by a sheep
+// The Submarine is threated if there is a ship in distance of less than 500 
+//return TRUE-if the submarine is threated by a ship; FALSE- if the submarine is not treated by a ship
 
 BOOL IsSubmarineThreatened(
 	Radar *radar //Radar object pointer (contain pointer to the foe list)

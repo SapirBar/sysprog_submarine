@@ -4,8 +4,10 @@
 #include "LinkedList.h"
 #include <string.h>
 #include "common.h"
+#include <math.h>
+
 BOOL FreeRadarList (LinkedList * list);
-unsigned int Oclide_distance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2);
+double Oclide_distance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2);
 
 Radar *InitializeRadar()
 {
@@ -63,7 +65,7 @@ BOOL AddRadarObject(
 
 	new_radar_object->type = type;
 	lenght_name = strlen (name);
-		//malloc and copy
+		//malloc and copy the name string
 	new_radar_object->name = (char *) malloc (sizeof(int)*lenght_name);
 	if (new_radar_object->name == NULL)
 	{
@@ -114,7 +116,7 @@ BOOL CalculateThreats(
 		return FALSE;
 	}
 	current_friend = (RadarListNode *) radar->friends->head;
-	while (current_friend != NULL)
+	while (current_friend != NULL) //For eac
 		{
 			current_foe = (RadarListNode *) radar->foes->head;
 			while (current_foe != NULL)
@@ -128,9 +130,19 @@ BOOL CalculateThreats(
 	return TRUE;
 }
 
-unsigned int Oclide_distance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2)
+double Oclide_distance ( unsigned int dist1, unsigned int dir1, unsigned int dist2, unsigned int dir2)
 {
-	int alpha = 0, oclide_distance = 0;
+	double alpha = 0;
+	double oclide_distance = 0;
+	(dir1>dir2)?(alpha=(double)(dir1-dir2)):(alpha=(double)(dir2-dir1));
+	if (alpha > 180 ) 
+	{
+		alpha = 360 - alpha;
+	}
+	//computing the oclide distance using the cosinos statement. 
+	oclide_distance = 2*dir1*dir2*cos(alpha);
+	oclide_distance = sqrt (dir1*dir1+dir2*dir2-oclide_distance);
+	return (oclide_distance);
 }
 
 
