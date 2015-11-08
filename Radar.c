@@ -66,7 +66,7 @@ BOOL AddRadarObject(
 	new_radar_object->type = type;
 	lenght_name = strlen (name);
 		//malloc and copy the name string
-	new_radar_object->name = (char *) malloc (sizeof(int)*(lenght_name+1));
+	new_radar_object->name = (char *) malloc (sizeof(char)*(lenght_name+1));
 	if (new_radar_object->name == NULL)
 	{
 		LOG_ERROR ("failed to malloc memory");
@@ -105,7 +105,7 @@ return TRUE;
 
 BOOL CalculateThreats(
 	Radar *radar,
-	unsigned int submarine_direction //if there are two treating sheeps in the same priority, we need to choose the ship which her relative direction from the submrine is minimal.
+	unsigned int submarine_direction //if there are two treating ships in the same priority, we need to choose the ship which her relative direction from the submrine is minimal.
 )
 {
 	RadarListNode *current_friend = NULL, *current_foe = NULL;
