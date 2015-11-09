@@ -68,6 +68,8 @@ BOOL UpdateFriends(
 	return TRUE;
 }
 
+
+
 //Add a friend to the list
 BOOL AddSeenFriend (SeenFriendsLinkedList * already_seen_list, char * name)
 {

@@ -252,7 +252,7 @@ BOOL GetSubmarineFriends(
 		LOG_ERROR("couldn't get friends list, radar image not initialized");
 		return FALSE;
 	}
-	if (radar->is_friends_list_updated=FALSE)
+	if (radar->is_friends_list_updated == FALSE)
 	{
 		LOG_WARN ("sumbrine friend list not updated!");
 		return FALSE;
