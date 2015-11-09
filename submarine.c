@@ -154,8 +154,8 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 //	return TRUE;
 
 	// If there are no enemies
-	if (are_there_foes == FALSE && )
-	{
+	//if (are_there_foes == FALSE && )
+	//{
 		// Calculate NEW_DIRECTION (change in submarine_command)
 		// Use already_see_friends
 		// Set DEPTH to 100 (change in submarine_command)

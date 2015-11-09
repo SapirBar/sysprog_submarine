@@ -3,7 +3,7 @@
 
 #include "LinkedList.h"
 #include "common.h"
-#define INVALID_DISTANCE (1001)
+#define INVALID_DISTANCE (1000)
 typedef enum {
 	FRIEND=0,
 	FOE
