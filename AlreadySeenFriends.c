@@ -63,8 +63,8 @@ BOOL UpdateFriends(
 BOOL AddSeenFriend (SeenFriendsLinkedList * already_seen_list, char * name)
 {
 	SeenFriendNode * new_seen_friend=NULL;
-	int lenght_name = 0;
-	lenght_name = strlen (name);
+	int length_name = 0;
+	length_name = strlen (name);
 	//allocate memory for the object
 	new_seen_friend= (SeenFriendNode *) malloc (sizeof (SeenFriendNode *));
 	if (new_seen_friend == NULL)
@@ -72,14 +72,14 @@ BOOL AddSeenFriend (SeenFriendsLinkedList * already_seen_list, char * name)
 		LOG_ERROR("failed to allocate memory");
 		return FALSE; 
 	}
-	new_seen_friend->entry = (SeenFriend *) malloc (sizeof(char)*(lenght_name+1));
+	new_seen_friend->entry = (SeenFriend *) malloc (sizeof(char)*(length_name+1));
 	if (new_seen_friend->entry)
 	{
 		LOG_ERROR ("failed to allocate memory");
 		free (new_seen_friend);
 		return FALSE;
 	}
-	memcpy(new_seen_friend->entry, name, lenght_name+1);
+	memcpy(new_seen_friend->entry, name, length_name+1);
 	if (AddLinkedListEntry((LinkedList *)already_seen_list,new_seen_friend) == FALSE)
 		{
 			LOG_ERROR("failed to add a foe to the list");

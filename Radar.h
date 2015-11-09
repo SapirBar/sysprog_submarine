@@ -34,6 +34,7 @@ typedef struct Radar_s {
 	LinkedList *foes;
 	BOOL is_friends_list_updated;
 } Radar;
+
 // This function crating a new radar image, containing two list: Friends and foes list, each one is emppty. 
 //The return value is a pointer for Radar structure.
 Radar *InitializeRadar();
@@ -85,7 +86,7 @@ BOOL IsSubmarineThreatened(
 
 //return True if there are foes and False if there are no foes.
 //returnfalse also when received null pointer (and print a log error)
-BOOL IsThereFoes (
+BOOL AreThereFoes (
 	Radar *radar
 	);
 
