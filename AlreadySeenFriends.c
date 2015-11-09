@@ -44,19 +44,8 @@ BOOL UpdateFriends(
 	//walking through the friends in the radar list (all the friends in this point of time)
 	for (friend_node_radar = friends_list->head; friend_node_radar != NULL; friend_node_radar = friend_node_radar ->next)
 	{
-		//walking through the already seen friends check if the name is already exist
-		seen_friend_curr=already_seen_friends->seen_friends->head;
-		 while (seen_friend_curr != NULL)
-		 {
-			 if (strcmp(friend_node_radar->entry->name,(char *)seen_friend_curr->entry) == 0)
-				 {
-					 break;
-			     }
-				 seen_friend_curr=seen_friend_curr->next; 
-		 }
-		//if the name is not exist,the pointer is pointing to the the end of the list
-		 
-		 if (seen_friend_curr = NULL)
+		//if the name is not already in the list, we will add it
+		 if (!IsAlreadySeenFriend(already_seen_friends,friend_node_radar->entry->name))
 		 {    //add the friend name to the list
 			 if (AddSeenFriend(already_seen_friends->seen_friends,friend_node_radar->entry->name) == FALSE)
 			 {     //creating new node failed
@@ -101,24 +90,39 @@ BOOL AddSeenFriend (SeenFriendsLinkedList * already_seen_list, char * name)
 	return TRUE;
 }
 
-BOOL GetAlreadySeenFriends(
+BOOL IsAlreadySeenFriend(
 	AlreadySeenFriends *already_seen_friends,
-	SeenFriendsLinkedList **seen_friends_list
+	char * name
 )
 {
-	if (already_seen_friends == NULL)
+	SeenFriendNode * seen_friend_curr = NULL;
+	if (already_seen_friends == NULL || already_seen_friends->seen_friends == NULL)
 	{
 		LOG_ERROR("already seen friend not initilized");
 		return FALSE;
 	}
-	*seen_friends_list = already_seen_friends->seen_friends;
+	//walking through the already seen friends check if the name is already exist
+		seen_friend_curr=already_seen_friends->seen_friends->head;
+		 while (seen_friend_curr != NULL)
+		 {
+			 if (strcmp(name,(char *)seen_friend_curr->entry) == 0)
+				 {
+					 break;
+			     }
+				 seen_friend_curr=seen_friend_curr->next; 
+		 }
+		//if the name is not exist,the pointer is pointing to the the end of the list
+if (seen_friend_curr = NULL)
+{
+	return FALSE;
+} //else, the name are identical and we break the loop with pointer diffrent from null
 	return TRUE;
 }
 
 BOOL FreeAlreadySeenFriends (AlreadySeenFriends *already_seen_friends)
 {
 	SeenFriendNode * seen_friend_curr=NULL;
-if (already_seen_friends == NULL)
+if (already_seen_friends == NULL || already_seen_friends->seen_friends == NULL)
 	{
 		LOG_ERROR("failed to free memory, received NULL pointer");
 		return FALSE;

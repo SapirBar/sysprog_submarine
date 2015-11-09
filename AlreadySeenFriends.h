@@ -17,6 +17,7 @@ typedef struct {
 	SeenFriendNode *tail;
 } SeenFriendsLinkedList;
 
+
 typedef struct {
 	SeenFriendsLinkedList *seen_friends;
 } AlreadySeenFriends;
@@ -33,10 +34,13 @@ BOOL UpdateFriends(
 	AlreadySeenFriends *already_seen_friends,
 	RadarObjectLinkedList *friends_list
 );
-
-BOOL GetAlreadySeenFriends(
+//receive a pointer to SeenFriends structure and a name of a ship,
+// the function return TRUE if the ship is already in the list 
+// retyeb False if it is not in the list or there is a problem with the pointers.
+// in case pf problem- also output log error
+BOOL IsAlreadySeenFriend(
 	AlreadySeenFriends *already_seen_friends,
-	SeenFriendsLinkedList **seen_friends_list
+	char *name
 );
 
 //receive a pointer to the list and free all the memory allocated in the list.
