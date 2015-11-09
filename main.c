@@ -5,6 +5,7 @@
 #include "SubmarineOutputWriter.h"
 #include "common.h"
 #include "Hw1TextFileReader.h"
+#include "AlreadySeenFriends.h"
 
 #define WORDS_IN_INPUT_LINE (4)
 #define INPUT_PARAMETERS_NUM (5)
@@ -218,6 +219,7 @@ int main(int argc, char *argv[])
 	int initial_direction = 0;
 	int initial_depth = 0;
 	int initial_ammo = 0;
+	AlreadySeenFriends* seen_friends = NULL;
 	Submarine *submarine = NULL;
 	TextFileReader reader;
 	SubmarineOutputWriter *output_writer = NULL;

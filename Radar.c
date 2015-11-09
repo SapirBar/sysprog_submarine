@@ -194,8 +194,21 @@ BOOL IsSubmarineThreatened(
 	}
 	return FALSE;
 }
-
-
+BOOL IsThereFoes (
+Radar *radar
+)
+{
+	if (radar == NULL || radar->friends == NULL || radar->foes == NULL)
+	{
+      LOG_ERROR("failed to calculate threats: Radar picture is empty");
+	  return FALSE;
+	}
+	if (radar->foes->head == NULL)
+	{
+		return FALSE;
+	}
+	return TRUE;
+}
 BOOL EliminateFoe(
 	Radar *radar, //A pointer to radar picture containing the foes and friends lists.
 	RadarObject *foe //A pointer to a foe need to eliminate.

@@ -83,6 +83,12 @@ BOOL IsSubmarineThreatened(
 	Radar *radar //Radar object pointer (contain pointer to the foe list)
 );
 
+//return True if there are foes and False if there are no foes.
+//returnfalse also when received null pointer (and print a log error)
+BOOL IsThereFoes (
+	Radar *radar
+	);
+
 //free all memory allocated for the radar picture;
 BOOL FreeRadar(
 	Radar *radar

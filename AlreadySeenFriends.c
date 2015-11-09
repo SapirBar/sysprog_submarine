@@ -68,12 +68,13 @@ BOOL UpdateFriends(
 	return TRUE;
 }
 
-//allocate memory for the object
+//Add a friend to the list
 BOOL AddSeenFriend (SeenFriendsLinkedList * already_seen_list, char * name)
 {
 	SeenFriendNode * new_seen_friend=NULL;
 	int lenght_name = 0;
 	lenght_name = strlen (name);
+	//allocate memory for the object
 	new_seen_friend= (SeenFriendNode *) malloc (sizeof (SeenFriendNode *));
 	if (new_seen_friend == NULL)
 	{
@@ -108,6 +109,29 @@ BOOL GetAlreadySeenFriends(
 		LOG_ERROR("already seen friend not initilized");
 		return FALSE;
 	}
-	*seen_friends_list=already_seen_friends->seen_friends;
+	*seen_friends_list = already_seen_friends->seen_friends;
 	return TRUE;
+}
+
+BOOL FreeAlreadySeenFriends (AlreadySeenFriends *already_seen_friends)
+{
+	SeenFriendNode * seen_friend_curr=NULL;
+if (already_seen_friends == NULL)
+	{
+		LOG_ERROR("failed to free memory, received NULL pointer");
+		return FALSE;
+	}
+seen_friend_curr=already_seen_friends->seen_friends->head;
+while (seen_friend_curr != NULL)
+{
+	free (seen_friend_curr->entry);
+	seen_friend_curr=seen_friend_curr->next;
+}
+if (FreeLinkedList((LinkedList *)already_seen_friends->seen_friends) == FALSE) //free the list itself
+{
+	LOG_ERROR("failed to free seen friend list");
+	return FALSE;
+}
+free (already_seen_friends);
+return TRUE;
 }

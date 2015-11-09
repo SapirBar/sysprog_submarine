@@ -39,5 +39,7 @@ BOOL GetAlreadySeenFriends(
 	SeenFriendsLinkedList **seen_friends_list
 );
 
-//free memory??
+//receive a pointer to the list and free all the memory allocated in the list.
+//return false in case nulll
+BOOL FreeAlreadySeenFriends (AlreadySeenFriends *already_seen_friends);
 #endif
