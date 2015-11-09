@@ -101,4 +101,13 @@ BOOL AddSeenFriend (SeenFriendsLinkedList * already_seen_list, char * name)
 BOOL GetAlreadySeenFriends(
 	AlreadySeenFriends *already_seen_friends,
 	SeenFriendsLinkedList **seen_friends_list
-);
+)
+{
+	if (already_seen_friends == NULL)
+	{
+		LOG_ERROR("already seen friend not initilized");
+		return FALSE;
+	}
+	*seen_friends_list=already_seen_friends->seen_friends;
+	return TRUE;
+}

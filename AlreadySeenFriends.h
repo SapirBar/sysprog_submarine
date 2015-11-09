@@ -39,4 +39,5 @@ BOOL GetAlreadySeenFriends(
 	SeenFriendsLinkedList **seen_friends_list
 );
 
+//free memory??
 #endif
