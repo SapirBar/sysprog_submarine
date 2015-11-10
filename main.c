@@ -168,6 +168,7 @@ BOOL RunSimulation(Submarine *submarine, TextFileReader reader)
 			continue;
 		}
 
+		is_new_batch = TRUE;
 		// If this is not an empty line and is_new_batch == TRUE, then we 
 		// should initialize a new Radar
 		if (radar == NULL)
