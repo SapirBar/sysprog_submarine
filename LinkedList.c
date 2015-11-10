@@ -37,14 +37,17 @@ BOOL AddLinkedListEntry(LinkedList *list, void* entry)
 	}
 	memset(new_entry, '\0', sizeof(*new_entry));
 	new_entry->entry = entry;
-	new_entry->next = list->head->next;
+
+	if (list->head == NULL)
+	{
+		list->head = new_entry;
+		list->tail = new_entry;
+	} else
+	{
+		new_entry->next = list->head->next;
+	}
 	new_entry->prev = NULL;
 	list->head = new_entry;
-
-	if (list->tail == NULL)
-	{
-		list->tail = new_entry;
-	}
 
 	return TRUE;
 }
@@ -100,7 +103,7 @@ BOOL FreeLinkedList(LinkedList *list)
 		return FALSE;
 	}
 
-	for (entry=list->head; entry->next != NULL; )
+	for (entry=list->head; entry != NULL; )
 	{
 		next = entry->next;
 		free(entry);

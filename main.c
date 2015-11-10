@@ -7,7 +7,7 @@
 #include "Hw1TextFileReader.h"
 
 #define WORDS_IN_INPUT_LINE (4)
-#define INPUT_PARAMETERS_NUM (5)
+#define INPUT_PARAMETERS_NUM (6)
 
 typedef enum {
 	INPUT_FILE_SIGNATURE_OFFSET = 0,
@@ -17,7 +17,7 @@ typedef enum {
 } InputLineOffset;
 
 typedef enum {
-	CMD_PARAMETER_INPUT_FILE_OFFSET = 0,
+	CMD_PARAMETER_INPUT_FILE_OFFSET = 1,
 	CMD_PARAMETER_INIT_DIRECTION_OFFSET,
 	CMD_PARAMETER_INIT_DEPTH_OFFSET,
 	CMD_PARAMETER_INIT_AMMO_OFFSET,
@@ -139,13 +139,16 @@ BOOL RunSimulation(Submarine *submarine, TextFileReader reader)
 	unsigned int direction = 0;
 	unsigned int distance = 0;
 	BOOL result = FALSE;
+	BOOL is_first_line = TRUE;
+	BOOL is_empty_line = FALSE;
 
 	for (line_index=0; line_index < reader.NumOfLines; line_index++)
 	{
 		if (IsEmptyLine(reader, line_index))
 		{
-			if (!is_new_batch)
+			if (is_new_batch)
 			{
+				LOG_INFO("New batch founded");
 				if (!HandleRadarPicture(submarine, radar))
 				{
 					LOG_ERROR("Submarine failed to handle radar picture");
@@ -160,14 +163,14 @@ BOOL RunSimulation(Submarine *submarine, TextFileReader reader)
 					}
 					radar = NULL;
 				}
-				is_new_batch = TRUE;
+				is_new_batch = FALSE;
 			}
 			continue;
 		}
 
 		// If this is not an empty line and is_new_batch == TRUE, then we 
 		// should initialize a new Radar
-		if (is_new_batch)
+		if (radar == NULL)
 		{
 			radar = InitializeRadar();
 			if (radar == NULL)
@@ -196,6 +199,16 @@ BOOL RunSimulation(Submarine *submarine, TextFileReader reader)
 			goto cleanup;
 		}
 
+	}
+
+	if (is_new_batch)
+	{
+		LOG_INFO("Handling final batch");
+		if (!HandleRadarPicture(submarine, radar))
+		{
+			LOG_ERROR("Submarine failed to handle radar picture");
+			goto cleanup;
+		}
 	}
 
 	result = TRUE;

@@ -30,15 +30,17 @@ Submarine *InitializeSubmarine(
 
 BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 	
-	RadarObject *most_threatened_friend = NULL;
 	RadarObject *foe_to_shoot = NULL;
+	RadarObject *current_object = NULL;
 	RadarListNode *node = NULL;
 	RadarObjectLinkedList *friends = NULL;
 	SubmarineCommand submarine_command;
 	double min_threat_distance = INVALID_DISTANCE;
-	unsigned int new_direction=0;
-	int new_ammo = submarine->ammo;
 	BOOL are_there_foes = FALSE;
+	SubmarineFireCommand fire_command = CEASE;
+	unsigned int new_direction = submarine->direction;
+	int new_ammo = submarine->ammo;
+	int new_depth = submarine->depth;
 	
 	LOG_INFO("HandleRadarPicture called");
 	if ((submarine == NULL) || (radar == NULL))
@@ -50,13 +52,13 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 
 	// Check if submarine is in danger
 	if (IsSubmarineThreatened(radar) && (submarine->depth == SUBMARINE_LOW_DEPTH)) {
-		submarine_command.new_depth = SUBMARINE_DEEP_DEPTH;
+		new_depth = SUBMARINE_DEEP_DEPTH;
 	}
 
 	// Check if submarine is out of ammo
 	if (submarine->ammo == 0)
 	{
-		submarine_command.fire_command = CEASE;
+		fire_command = CEASE;
 	}
 
 	//if submarine has ammo, check if there is a friend in danger
@@ -76,32 +78,39 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 		{
 			LOG_INFO("Not checking for threatened friends since the friends list is empty");
 		} else {
-				
 			/* TBD: move the following to another function */
 			//initializing variables
 			min_threat_distance = friends->head->entry->threat_distance;
 			foe_to_shoot = friends->head->entry->most_threatening_foe;
-			new_direction = friends->head->entry->most_threatening_foe->direction;
-			most_threatened_friend = friends->head->entry;
-		
+			if (foe_to_shoot != NULL)
+			{
+				new_direction = friends->head->entry->most_threatening_foe->direction;
+			}
+
 			//calculating most threatening foe of all foes
 			for (node = friends->head; node != NULL; node = node->next)
 			{
+				current_object = node->entry;
+				if (current_object->most_threatening_foe == NULL)
+				{
+					LOG_INFO("Friend %s has no threatening foes", current_object->name);
+					continue;
+				}
 				//checking whether current node's threat distance is less than seen so far, and with the case of two friends that their threat_distance equals
 				//Reliying on the fact that INVALID_DISTANCE is the minimal not threatening foe (distance from submarine=1001)
-				if ((node->entry->threat_distance < min_threat_distance)
-					||((node->entry->threat_distance == min_threat_distance) 
-						&& (node->entry->most_threatening_foe->direction < new_direction)
-						&&(min_threat_distance != INVALID_DISTANCE)))
+				if ((current_object->threat_distance < min_threat_distance) ||
+						((current_object->threat_distance == min_threat_distance) &&
+						 (node->entry->most_threatening_foe->direction < new_direction) &&
+						 (min_threat_distance != INVALID_DISTANCE)
+					)
+				)
 				{
 						are_there_foes = TRUE;
 						new_direction = node->entry->most_threatening_foe->direction;
 						foe_to_shoot = node->entry->most_threatening_foe;
 						min_threat_distance = node->entry->threat_distance;
-						most_threatened_friend = node->entry;
 				}
 			}
-			submarine_command.new_direction = new_direction;
 		}
 	}
 
@@ -109,15 +118,20 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 	if (min_threat_distance != INVALID_DISTANCE)
 	{
 		//Then found a foe that has to be shut
-		submarine_command.fire_command = FIRE;
+		fire_command = FIRE;
 		new_ammo--;
-		submarine_command.new_ammo = new_ammo;
 		if(!EliminateFoe(radar, foe_to_shoot)) 
 		{
 			LOG_ERROR("Failed to eliminate foe");
 			return FALSE;
 		}
 	}
+
+	// fill submarine_command fields
+	submarine_command.new_ammo = new_ammo;
+	submarine_command.new_direction = new_direction;
+	submarine_command.fire_command = fire_command;
+	submarine_command.new_depth = new_depth;
 
 	//update submarine object fields
 	submarine->ammo = submarine_command.new_ammo;
