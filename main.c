@@ -5,6 +5,7 @@
 #include "SubmarineOutputWriter.h"
 #include "common.h"
 #include "Hw1TextFileReader.h"
+#include "AlreadySeenFriends.h"
 
 #define WORDS_IN_INPUT_LINE (4)
 #define INPUT_PARAMETERS_NUM (6)
@@ -128,7 +129,7 @@ BOOL HandleInputFileLine(
 	return TRUE;
 }
 
-BOOL RunSimulation(Submarine *submarine, TextFileReader reader)
+BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriends **already_seen_friends)
 {
 	int line_index = 0;
 	int word_index = 0;
@@ -149,7 +150,7 @@ BOOL RunSimulation(Submarine *submarine, TextFileReader reader)
 			if (is_new_batch)
 			{
 				LOG_INFO("New batch founded");
-				if (!HandleRadarPicture(submarine, radar))
+				if (!HandleRadarPicture(submarine, radar,*already_seen_friends))
 				{
 					LOG_ERROR("Submarine failed to handle radar picture");
 					goto cleanup;
@@ -232,6 +233,7 @@ int main(int argc, char *argv[])
 	int initial_depth = 0;
 	int initial_ammo = 0;
 	Submarine *submarine = NULL;
+	AlreadySeenFriends **already_seen_friends = NULL;
 	TextFileReader reader;
 	SubmarineOutputWriter *output_writer = NULL;
 	BOOL simulation_result = FALSE;
@@ -288,7 +290,8 @@ int main(int argc, char *argv[])
 		initial_depth, 
 		initial_direction, 
 		initial_ammo,
-		output_writer
+		output_writer,
+		already_seen_friends
 	);
 	if (submarine == NULL) 
 	{
@@ -297,7 +300,7 @@ int main(int argc, char *argv[])
 		goto cleanup;
 	}
 
-	simulation_result = RunSimulation(submarine, reader);
+	simulation_result = RunSimulation(submarine, reader,AlreadySeenFriends ** already_seen_friends);
 	if (!simulation_result)
 	{
 		LOG_ERROR("Failed during the simulation");
@@ -308,7 +311,7 @@ cleanup:
 	// Cleanup
 	if (submarine != NULL)
 	{
-		FreeSubmarine(submarine);
+		FreeSubmarine(submarine,already_seen_friends);
 	}
 	if (output_writer != NULL)
 	{

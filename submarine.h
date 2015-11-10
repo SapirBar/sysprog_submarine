@@ -4,6 +4,7 @@
 #include "Radar.h"
 #include "SubmarineCommand.h"
 #include "SubmarineOutputWriter.h"
+#include "AlreadySeenFriends.h"
 
 #define SUBMARINE_LOW_DEPTH 100
 #define SUBMARINE_DEEP_DEPTH 200
@@ -23,16 +24,19 @@ Submarine *InitializeSubmarine(
 	int initial_depth,
 	int initial_direction,
 	int initial_ammo,
-	SubmarineOutputWriter *output_writer	
+	SubmarineOutputWriter *output_writer,
+	AlreadySeenFriends ** already_seen_friends_pointer
 );
 
 BOOL HandleRadarPicture(
 	Submarine *submarine, 
-	Radar *radar
+	Radar *radar,
+	AlreadySeenFriends *already_seen_friends
 );
 
 BOOL FreeSubmarine(
-	Submarine *submarine
+	Submarine *submarine,
+	AlreadySeenFriends ** already_seen_friends_pointer
 );
 
 #endif
