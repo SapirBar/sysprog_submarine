@@ -156,7 +156,7 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 
 	WriteNewCommand(submarine->submarine_output_writer, &submarine_command);
 
-//	return TRUE;
+	return TRUE;
 
 	// If there are no enemies
 	//if (are_there_foes == FALSE && )
