@@ -1,14 +1,16 @@
-//Author: Adi Mashiah, ID:305205676\
+//Author: Adi Mashiah, ID:305205676\Reut Lev, ID:305259186
 //Belongs to project: sysprog_submarine
 //This module represents the submarine entity. It recieves the radar image and decides about the output command.
 #include <stdlib.h>
 #include "submarine.h"
+#include "AlreadySeenFriends.h"
 
 Submarine *InitializeSubmarine(
 	int initial_depth, 
 	int initial_direction, 
 	int initial_ammo,
-	SubmarineOutputWriter *output_writer
+	SubmarineOutputWriter *output_writer,
+	AlreadySeenFriends ** already_seen_friends_pointer
 ) {
 	//returns the pointer for Submarine struct created.
 	Submarine *submarine = NULL;
@@ -24,11 +26,11 @@ Submarine *InitializeSubmarine(
 	submarine->direction = initial_direction;
 	submarine->ammo = initial_ammo;
 	submarine->submarine_output_writer = output_writer;
-	
+	* already_seen_friends_pointer=InitializeAlreadySeenFriends();
 	return submarine;
 }
 
-BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
+BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *already_seen_friends) {
 	
 	RadarObject *foe_to_shoot = NULL;
 	RadarObject *current_object = NULL;
@@ -36,6 +38,8 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 	RadarObjectLinkedList *friends = NULL;
 	SubmarineCommand submarine_command;
 	double min_threat_distance = INVALID_DISTANCE;
+	unsigned int min_friend_distance=0;
+	BOOL is_there_seen_friend = FALSE; //flag if there is seen friend
 	BOOL are_there_foes = FALSE;
 	SubmarineFireCommand fire_command = CEASE;
 	unsigned int new_direction = submarine->direction;
@@ -69,7 +73,7 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 			return FALSE;
 		}
 		if (!GetSubmarineFriends(radar, &friends)) {
-			LOG_ERROR("Failed to ger submarine friends");
+			LOG_ERROR("Failed to get submarine friends");
 			return FALSE;
 		}
 
@@ -159,22 +163,71 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar) {
 	return TRUE;
 
 	// If there are no enemies
+	if(!AreThereFoes(radar))
+	{ 
+		//Dealing the case there is no ammo and only friends on the same point in time
+		// we wouldn't get the list in the first loop
+	if (!GetSubmarineFriends(radar, &friends)) {
+			LOG_ERROR("Failed to get submarine friends");
+			return FALSE;
+		}
+
+	for (node = friends->head; node != NULL; node = node->next)
+	{
+		if (IsAlreadySeenFriend(already_seen_friends,node->entry->name))
+		{   //if there is more than one, we will chose the closer. 
+			
+			if (is_there_seen_friend = FALSE) 
+				{    //this is the first time we reach seen friend,
+					// initialize min_friend_distance to it's distance
+			        is_there_seen_friend = TRUE;
+					min_friend_distance = node->entry->distance;
+					new_direction = node->entry->direction;
+					new_depth = SUBMARINE_LOW_DEPTH;
+			    }
+			else //second friend or more... 
+			{
+				if (node->entry->distance<min_friend_distance)
+				{
+					min_friend_distance = node->entry->distance;
+					new_direction = node->entry->direction;
+				}
+			}
+		}
+
+	}
+		if (is_there_seen_friend)
+		{
+			// fill submarine_command fields
+			submarine_command.new_direction = new_direction;
+			submarine_command.new_depth = new_depth;
+
+			//update submarine object fields
+			submarine->depth = submarine_command.new_depth;
+			submarine->direction = submarine_command.new_direction;
+
+		}
+	}
 	//if (are_there_foes == FALSE && )
 	//{
 		// Calculate NEW_DIRECTION (change in submarine_command)
 		// Use already_see_friends
 		// Set DEPTH to 100 (change in submarine_command)
 //	}
-	
 
-		// update already seen friends
+// update already seen friends
+	if (!UpdateFriends(already_seen_friends, friends))
+	{
+		LOG_ERROR("failed to update already seen friends");
+		return FALSE;
+	}
+		
 
 	return TRUE;
 
 }
 
-BOOL FreeSubmarine(Submarine *submarine)
-{
+BOOL FreeSubmarine(Submarine *submarine, AlreadySeenFriends **already_seen_friends_pointer) {
 	LOG_INFO("FreeSubmarine called");
 	if (submarine == NULL)
 	{
@@ -182,5 +235,11 @@ BOOL FreeSubmarine(Submarine *submarine)
 		return FALSE;
 	}
 	free(submarine);
+	if (FreeAlreadySeenFriends(*already_seen_friends_pointer) ==FALSE)
+	{
+		LOG_ERROR("Free Already Seen Friends failed");
+		return FALSE;
+	}
+
 	return TRUE;
 }

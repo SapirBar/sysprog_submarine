@@ -1,3 +1,8 @@
+//Author: Adi Mashiah, ID:305205676\Reut Lev, ID:305259186
+//Belongs to project: sysprog_submarine
+//Already seen friends save the friends which already seen
+//and can tell if any friend already seen or not. 
+// using the files: "LinkedList.h","Radar.h"
 #ifndef ALREADY_SEEN_FRIENDS_H
 #define ALREADY_SEEN_FRIENDS_H
 

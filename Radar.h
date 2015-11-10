@@ -1,3 +1,12 @@
+//Author: Adi Mashiah, ID:305205676\Reut Lev, ID:305259186
+//Belongs to project: sysprog_submarine
+//Radar model receive parameters about ships in a specific point in time
+//and divide them into two diffrent list: foes and friends.
+//see RadarObject structure to understand which data saved for each,
+// the radar can caculate the friends threats,
+//send submarine a list of friends, eliminate foe from it's list
+//tell is there are foes or if the submarine is threated.
+// using the files: "LinkedList.h","common.h"
 #ifndef RADAR_H
 #define RADAR_H
 
