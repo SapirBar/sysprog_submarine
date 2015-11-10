@@ -36,7 +36,7 @@ BOOL HandleRadarPicture(
 
 BOOL FreeSubmarine(
 	Submarine *submarine,
-	AlreadySeenFriends ** already_seen_friends_pointer
+	AlreadySeenFriends **already_seen_friends_pointer
 );
 
 #endif

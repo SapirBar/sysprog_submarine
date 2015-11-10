@@ -167,12 +167,12 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 	{ 
 		//Dealing the case there is no ammo and only friends on the same point in time
 		// we wouldn't get the list in the first loop
-if (!GetSubmarineFriends(radar, &friends)) {
+	if (!GetSubmarineFriends(radar, &friends)) {
 			LOG_ERROR("Failed to get submarine friends");
 			return FALSE;
 		}
 
-for (node = friends->head; node != NULL; node = node->next)
+	for (node = friends->head; node != NULL; node = node->next)
 	{
 		if (IsAlreadySeenFriend(already_seen_friends,node->entry->name))
 		{   //if there is more than one, we will chose the closer. 
@@ -194,20 +194,20 @@ for (node = friends->head; node != NULL; node = node->next)
 				}
 			}
 		}
-	
+
 	}
-if (is_there_seen_friend)
-{
-	// fill submarine_command fields
-	submarine_command.new_direction = new_direction;
-	submarine_command.new_depth = new_depth;
+		if (is_there_seen_friend)
+		{
+			// fill submarine_command fields
+			submarine_command.new_direction = new_direction;
+			submarine_command.new_depth = new_depth;
 
-	//update submarine object fields
-	submarine->depth = submarine_command.new_depth;
-	submarine->direction = submarine_command.new_direction;
+			//update submarine object fields
+			submarine->depth = submarine_command.new_depth;
+			submarine->direction = submarine_command.new_direction;
 
-}
-
+		}
+	}
 	//if (are_there_foes == FALSE && )
 	//{
 		// Calculate NEW_DIRECTION (change in submarine_command)
@@ -227,8 +227,7 @@ if (is_there_seen_friend)
 
 }
 
-BOOL FreeSubmarine(Submarine *submarine,AlreadySeenFriends **already_seen_friends_pointer)
-{
+BOOL FreeSubmarine(Submarine *submarine, AlreadySeenFriends **already_seen_friends_pointer) {
 	LOG_INFO("FreeSubmarine called");
 	if (submarine == NULL)
 	{

@@ -205,7 +205,7 @@ BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriend
 	if (is_new_batch)
 	{
 		LOG_INFO("Handling final batch");
-		if (!HandleRadarPicture(submarine, radar))
+		if (!HandleRadarPicture(submarine, radar, *already_seen_friends))
 		{
 			LOG_ERROR("Submarine failed to handle radar picture");
 			goto cleanup;
@@ -300,7 +300,7 @@ int main(int argc, char *argv[])
 		goto cleanup;
 	}
 
-	simulation_result = RunSimulation(submarine, reader,AlreadySeenFriends ** already_seen_friends);
+	simulation_result = RunSimulation(submarine, reader,already_seen_friends);
 	if (!simulation_result)
 	{
 		LOG_ERROR("Failed during the simulation");
