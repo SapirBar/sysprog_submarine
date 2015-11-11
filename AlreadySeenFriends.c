@@ -81,7 +81,7 @@ BOOL AddSeenFriend (SeenFriendsLinkedList * already_seen_list, char * name)
 			free (new_seen_friend);     
 			return FALSE;
 		}
-	LOG_INFO("added %s to seen friend list");
+	LOG_INFO("added %s to seen friend list",name);
 	return TRUE;
 }
 
