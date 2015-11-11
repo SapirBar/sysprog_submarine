@@ -6,12 +6,21 @@
 #include "submarine.h"
 #include "AlreadySeenFriends.h"
 
+/*//$//
 Submarine *InitializeSubmarine(
 	int initial_depth, 
 	int initial_direction, 
 	int initial_ammo,
 	SubmarineOutputWriter *output_writer,
 	AlreadySeenFriends ** already_seen_friends_pointer
+) {
+*/
+
+Submarine *InitializeSubmarine(
+	int initial_depth, 
+	int initial_direction, 
+	int initial_ammo,
+	SubmarineOutputWriter *output_writer
 ) {
 	//returns the pointer for Submarine struct created.
 	Submarine *submarine = NULL;
@@ -27,7 +36,7 @@ Submarine *InitializeSubmarine(
 	submarine->direction = initial_direction;
 	submarine->ammo = initial_ammo;
 	submarine->submarine_output_writer = output_writer;
-	*already_seen_friends_pointer = InitializeAlreadySeenFriends();
+	//$//*already_seen_friends_pointer = InitializeAlreadySeenFriends();
 	return submarine;
 }
 
@@ -209,12 +218,6 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 
 		}
 	}
-	//if (are_there_foes == FALSE && )
-	//{
-		// Calculate NEW_DIRECTION (change in submarine_command)
-		// Use already_see_friends
-		// Set DEPTH to 100 (change in submarine_command)
-//	}
 
 // update already seen friends
 	if (!UpdateFriends(already_seen_friends, friends))
@@ -227,8 +230,8 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 	return TRUE;
 
 }
-
-BOOL FreeSubmarine(Submarine *submarine, AlreadySeenFriends **already_seen_friends_pointer) {
+//$//BOOL FreeSubmarine(Submarine *submarine, AlreadySeenFriends **already_seen_friends_pointer) {
+BOOL FreeSubmarine(Submarine *submarine) {
 	LOG_INFO("FreeSubmarine called");
 	if (submarine == NULL)
 	{
@@ -236,11 +239,11 @@ BOOL FreeSubmarine(Submarine *submarine, AlreadySeenFriends **already_seen_frien
 		return FALSE;
 	}
 	free(submarine);
-	if (FreeAlreadySeenFriends(*already_seen_friends_pointer) ==FALSE)
-	{
-		LOG_ERROR("Free Already Seen Friends failed");
-		return FALSE;
-	}
+//$//	if (FreeAlreadySeenFriends(already_seen_friends) ==FALSE)
+//$//	{
+//$//		LOG_ERROR("Free Already Seen Friends failed");
+//$//		return FALSE;
+//$//	}
 
 	return TRUE;
 }

@@ -22,13 +22,20 @@ typedef struct {
 	SubmarineOutputWriter *submarine_output_writer;
 } Submarine;
 
-
+/*//$//
+Submarine *InitializeSubmarine(
+	int initial_depth, 
+	int initial_direction, 
+	int initial_ammo,
+	SubmarineOutputWriter *output_writer,
+	AlreadySeenFriends ** already_seen_friends_pointer
+);
+*/
 Submarine *InitializeSubmarine(
 	int initial_depth,
 	int initial_direction,
 	int initial_ammo,
-	SubmarineOutputWriter *output_writer,
-	AlreadySeenFriends ** already_seen_friends_pointer
+	SubmarineOutputWriter *output_writer
 );
 
 BOOL HandleRadarPicture(
@@ -38,8 +45,12 @@ BOOL HandleRadarPicture(
 );
 
 BOOL FreeSubmarine(
+	Submarine *submarine
+);
+/*//$//
+BOOL FreeSubmarine(
 	Submarine *submarine,
 	AlreadySeenFriends **already_seen_friends_pointer
 );
-
+*/
 #endif
