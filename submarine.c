@@ -26,7 +26,7 @@ Submarine *InitializeSubmarine(
 	submarine->direction = initial_direction;
 	submarine->ammo = initial_ammo;
 	submarine->submarine_output_writer = output_writer;
-	* already_seen_friends_pointer=InitializeAlreadySeenFriends();
+	*already_seen_friends_pointer = InitializeAlreadySeenFriends();
 	return submarine;
 }
 

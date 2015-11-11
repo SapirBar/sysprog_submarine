@@ -128,8 +128,9 @@ BOOL HandleInputFileLine(
 	
 	return TRUE;
 }
-
-BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriends **already_seen_friends)
+//ADI:
+//BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriends **already_seen_friends)
+BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriends *already_seen_friends)
 {
 	int line_index = 0;
 	int word_index = 0;
@@ -234,7 +235,9 @@ int main(int argc, char *argv[])
 	int initial_depth = 0;
 	int initial_ammo = 0;
 	Submarine *submarine = NULL;
-	AlreadySeenFriends **already_seen_friends = NULL;
+	//ADI
+	//AlreadySeenFriends **already_seen_friends = NULL;
+	AlreadySeenFriends *already_seen_friends = NULL;
 	TextFileReader reader;
 	SubmarineOutputWriter *output_writer = NULL;
 	BOOL simulation_result = FALSE;
