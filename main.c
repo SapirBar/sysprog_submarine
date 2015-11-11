@@ -288,14 +288,14 @@ int main(int argc, char *argv[])
 		goto cleanup;
 	}
 	//Intialize already seen friends structure
-	already_seen_friends= InitializeAlreadySeenFriends();
+	already_seen_friends = InitializeAlreadySeenFriends();
 	// Initialize the Submarine
 	submarine = InitializeSubmarine(
 		initial_depth, 
 		initial_direction, 
 		initial_ammo,
 		output_writer
-//$//		already_seen_friends
+//$//		already_seen_friends..fds
 	);
 	if (submarine == NULL) 
 	{
