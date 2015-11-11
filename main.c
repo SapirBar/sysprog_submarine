@@ -128,9 +128,8 @@ BOOL HandleInputFileLine(
 	
 	return TRUE;
 }
-//ADI:
-//BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriends **already_seen_friends)
-BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriends *already_seen_friends)
+
+BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriends **already_seen_friends)
 {
 	int line_index = 0;
 	int word_index = 0;
