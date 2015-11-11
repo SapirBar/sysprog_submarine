@@ -43,8 +43,8 @@ BOOL AddLinkedListEntry(LinkedList *list, void* entry)
 		list->head = new_entry;
 		list->tail = new_entry;
 	} else
-	{
-		new_entry->next = list->head->next;
+	{//$//CHANGED list->head->next to list->head
+		new_entry->next = list->head;
 	}
 	new_entry->prev = NULL;
 	list->head = new_entry;
