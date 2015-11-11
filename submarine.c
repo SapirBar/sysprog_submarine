@@ -1,3 +1,4 @@
+//COMMENT
 //Author: Adi Mashiah, ID:305205676\Reut Lev, ID:305259186
 //Belongs to project: sysprog_submarine
 //This module represents the submarine entity. It recieves the radar image and decides about the output command.
