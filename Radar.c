@@ -67,7 +67,7 @@ BOOL AddRadarObject(
 	RadarObject *new_radar_object = NULL;
 	int length_name = 0;
 	LinkedList *list_to_add_object = NULL;
-
+	RadarListNode *node =NULL; //$//
 	LOG_INFO("AddRadarObject called");
 
 	if ((radar == NULL) || (name == NULL))
@@ -118,6 +118,11 @@ BOOL AddRadarObject(
 		free (new_radar_object->name);
 		free (new_radar_object);
 		return FALSE;
+	}
+	//$//debugg:
+	for (node = (RadarListNode *)list_to_add_object->head; node != NULL; node = node->next)
+	{
+		LOG_INFO("%s is in the list",node->entry->name);
 	}
 	LOG_INFO("AddRadarObject added %s to the list, %d (0-friend,1-foe)",new_radar_object->name,new_radar_object->type);
 	return TRUE;
