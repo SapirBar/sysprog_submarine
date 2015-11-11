@@ -128,8 +128,8 @@ BOOL HandleInputFileLine(
 	
 	return TRUE;
 }
-//ADI:
-//BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriends **already_seen_friends)
+
+//$//BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriends **already_seen_friends)
 BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriends *already_seen_friends)
 {
 	int line_index = 0;
@@ -151,7 +151,7 @@ BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriend
 			if (is_new_batch)
 			{
 				LOG_INFO("New batch founded");
-				if (!HandleRadarPicture(submarine, radar,*already_seen_friends))
+				if (!HandleRadarPicture(submarine, radar,already_seen_friends))
 				{
 					LOG_ERROR("Submarine failed to handle radar picture");
 					goto cleanup;
@@ -207,7 +207,7 @@ BOOL RunSimulation(Submarine *submarine, TextFileReader reader,AlreadySeenFriend
 	if (is_new_batch)
 	{
 		LOG_INFO("Handling final batch");
-		if (!HandleRadarPicture(submarine, radar, *already_seen_friends))
+		if (!HandleRadarPicture(submarine, radar, already_seen_friends))
 		{
 			LOG_ERROR("Submarine failed to handle radar picture");
 			goto cleanup;
@@ -235,8 +235,7 @@ int main(int argc, char *argv[])
 	int initial_depth = 0;
 	int initial_ammo = 0;
 	Submarine *submarine = NULL;
-	//ADI
-	//AlreadySeenFriends **already_seen_friends = NULL;
+	//$// AlreadySeenFriends **already_seen_friends = NULL;
 	AlreadySeenFriends *already_seen_friends = NULL;
 	TextFileReader reader;
 	SubmarineOutputWriter *output_writer = NULL;
@@ -288,14 +287,15 @@ int main(int argc, char *argv[])
 		error_code = SUBMARINE_OUTPUT_WRITER_FAILED;
 		goto cleanup;
 	}
-
+	//Intialize already seen friends structure
+	already_seen_friends= InitializeAlreadySeenFriends();
 	// Initialize the Submarine
 	submarine = InitializeSubmarine(
 		initial_depth, 
 		initial_direction, 
 		initial_ammo,
-		output_writer,
-		already_seen_friends
+		output_writer
+//$//		already_seen_friends
 	);
 	if (submarine == NULL) 
 	{
@@ -315,7 +315,12 @@ cleanup:
 	// Cleanup
 	if (submarine != NULL)
 	{
-		FreeSubmarine(submarine,already_seen_friends);
+		//$//FreeSubmarine(submarine,already_seen_friends);
+		FreeSubmarine(submarine);
+	}
+	if (already_seen_friends != NULL)
+	{
+		FreeAlreadySeenFriends (already_seen_friends);
 	}
 	if (output_writer != NULL)
 	{
