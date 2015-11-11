@@ -185,7 +185,6 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 	{
 		if (IsAlreadySeenFriend(already_seen_friends,node->entry->name))
 		{   //if there is more than one, we will chose the closer. 
-			
 			if (is_there_seen_friend = FALSE) 
 				{    //this is the first time we reach seen friend,
 					// initialize min_friend_distance to it's distance
