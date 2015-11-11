@@ -313,7 +313,6 @@ BOOL GetSubmarineFriends(
 	if (radar->is_friends_list_updated == FALSE)
 	{
 		LOG_WARN ("sumbrine friend list not updated!");
-		return FALSE;
 	}
 	*friends = (RadarObjectLinkedList *)radar->friends; //casting the list type needed;
 	return TRUE;

@@ -65,6 +65,11 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 	}
 	memset(&submarine_command, '\0', sizeof(submarine_command));
 
+	if (!GetSubmarineFriends(radar, &friends)) {
+		LOG_ERROR("Failed to get submarine friends");
+		return FALSE;
+	}
+
 	// Check if submarine is in danger
 	if (IsSubmarineThreatened(radar) && (submarine->depth == SUBMARINE_LOW_DEPTH)) 
 	{
@@ -88,10 +93,6 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 		//getting information from radar
 		if (!CalculateThreats(radar, submarine->direction)) {
 			LOG_ERROR("Failed to calculate threats");
-			return FALSE;
-		}
-		if (!GetSubmarineFriends(radar, &friends)) {
-			LOG_ERROR("Failed to get submarine friends");
 			return FALSE;
 		}
 
@@ -170,12 +171,6 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 	if(are_there_foes)
 	{ 
 		//Dealing the case there is no ammo and only friends on the same point in time
-		// we wouldn't get the list in the first loop
-		if (!GetSubmarineFriends(radar, &friends)) {
-			LOG_ERROR("Failed to get submarine friends");
-			return FALSE;
-		}
-
 		for (node = friends->head; node != NULL; node = node->next)
 		{
 			if (!IsAlreadySeenFriend(already_seen_friends, node->entry->name, &is_already_seen))
