@@ -42,10 +42,10 @@ BOOL UpdateFriends(
 		LOG_ERROR ("Couldn't add friends to already seen list: received uninitialized radar list");
 	}
 	//walking through the friends in the radar list (all the friends in this point of time)
-	for (friend_node_radar = friends_list->head; friend_node_radar != NULL; friend_node_radar = friend_node_radar ->next)
+	for (friend_node_radar = friends_list->head; friend_node_radar != NULL; friend_node_radar = friend_node_radar->next)
 	{
 		//if the name is not already in the list, we will add it
-		LOG_INFO ("want to add friend %s to seen friends", friend_node_radar->entry->name);
+		LOG_INFO ("try to add friend %s to seen friends", friend_node_radar->entry->name);
 		 if (!IsAlreadySeenFriend(already_seen_friends,friend_node_radar->entry->name))
 		 {    //add the friend name to the list
 			 if (AddSeenFriend(already_seen_friends->seen_friends,friend_node_radar->entry->name) == FALSE)

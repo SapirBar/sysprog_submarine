@@ -68,7 +68,7 @@ BOOL AddRadarObject(
 	int length_name = 0;
 	LinkedList *list_to_add_object = NULL;
 
-	LOG_INFO("AddRadarObject called for %s",name);
+	LOG_INFO("AddRadarObject called");
 
 	if ((radar == NULL) || (name == NULL))
 	{
@@ -119,9 +119,9 @@ BOOL AddRadarObject(
 		free (new_radar_object);
 		return FALSE;
 	}
-
+	LOG_INFO("AddRadarObject added %s to the list, %d (0-friend,1-foe)",new_radar_object->name,new_radar_object->type);
 	return TRUE;
-
+	
 }
 
 
