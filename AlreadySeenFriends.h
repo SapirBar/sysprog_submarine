@@ -45,7 +45,8 @@ BOOL UpdateFriends(
 // in case pf problem- also output log error
 BOOL IsAlreadySeenFriend(
 	AlreadySeenFriends *already_seen_friends,
-	char *name
+	char *name,
+	BOOL *is_already_seen
 );
 
 //receive a pointer to the list and free all the memory allocated in the list.

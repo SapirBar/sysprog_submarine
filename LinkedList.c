@@ -37,17 +37,17 @@ BOOL AddLinkedListEntry(LinkedList *list, void* entry)
 	}
 	memset(new_entry, '\0', sizeof(*new_entry));
 	new_entry->entry = entry;
+	new_entry->prev = NULL;
+	new_entry->next = list->head;
+	list->head = new_entry;
 
-	if (list->head == NULL)
+	if (list->tail == NULL)
 	{
-		list->head = new_entry;
 		list->tail = new_entry;
 	} else
-	{//$//CHANGED list->head->next to list->head
-		new_entry->next = list->head;
+	{
+		new_entry->next->prev = new_entry;
 	}
-	new_entry->prev = NULL;
-	list->head = new_entry;
 
 	return TRUE;
 }
@@ -87,6 +87,7 @@ BOOL DeleteLinkedListEntry(LinkedList *list, void* entry)
 			was_deleted = TRUE;
 			break;
 		}
+		node = node->next;
 	}
 
 	return was_deleted;

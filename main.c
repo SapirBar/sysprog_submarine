@@ -304,7 +304,7 @@ int main(int argc, char *argv[])
 		goto cleanup;
 	}
 
-	simulation_result = RunSimulation(submarine, reader,already_seen_friends);
+	simulation_result = RunSimulation(submarine, reader, already_seen_friends);
 	if (!simulation_result)
 	{
 		LOG_ERROR("Failed during the simulation");
@@ -320,7 +320,7 @@ cleanup:
 	}
 	if (already_seen_friends != NULL)
 	{
-		FreeAlreadySeenFriends (already_seen_friends);
+		FreeAlreadySeenFriends(already_seen_friends);
 	}
 	if (output_writer != NULL)
 	{

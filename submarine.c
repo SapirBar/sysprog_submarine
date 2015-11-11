@@ -55,6 +55,7 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 	unsigned int new_direction = submarine->direction;
 	int new_ammo = submarine->ammo;
 	int new_depth = submarine->depth;
+	BOOL is_already_seen = FALSE;
 	
 	LOG_INFO("HandleRadarPicture called");
 	if ((submarine == NULL) || (radar == NULL))
@@ -65,8 +66,15 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 	memset(&submarine_command, '\0', sizeof(submarine_command));
 
 	// Check if submarine is in danger
-	if (IsSubmarineThreatened(radar) && (submarine->depth == SUBMARINE_LOW_DEPTH)) {
+	if (IsSubmarineThreatened(radar) && (submarine->depth == SUBMARINE_LOW_DEPTH)) 
+	{
 		new_depth = SUBMARINE_DEEP_DEPTH;
+	}
+
+	if (!AreThereFoes(radar, &are_there_foes))
+	{
+		LOG_ERROR("Failed to check if are there foes");
+		return FALSE;
 	}
 
 	// Check if submarine is out of ammo
@@ -119,7 +127,6 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 					)
 				)
 				{
-						are_there_foes = TRUE;
 						new_direction = node->entry->most_threatening_foe->direction;
 						foe_to_shoot = node->entry->most_threatening_foe;
 						min_threat_distance = node->entry->threat_distance;
@@ -159,51 +166,45 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 		return FALSE;
 	}
 
-	// Warn threatened friends
-	for (node = friends->head; node != NULL; node = node->next)
-	{
-		if (node->entry->threat_distance != INVALID_DISTANCE)
-		{
-			WriteWarningMessage(submarine->submarine_output_writer, node->entry->name);
-		}
-	}
-
-	WriteNewCommand(submarine->submarine_output_writer, &submarine_command);
-
-
 	// If there are no enemies
-	if(!AreThereFoes(radar))
+	if(are_there_foes)
 	{ 
 		//Dealing the case there is no ammo and only friends on the same point in time
 		// we wouldn't get the list in the first loop
-	if (!GetSubmarineFriends(radar, &friends)) {
+		if (!GetSubmarineFriends(radar, &friends)) {
 			LOG_ERROR("Failed to get submarine friends");
 			return FALSE;
 		}
 
-	for (node = friends->head; node != NULL; node = node->next)
-	{
-		if (IsAlreadySeenFriend(already_seen_friends,node->entry->name))
-		{   //if there is more than one, we will chose the closer. 
-			if (is_there_seen_friend = FALSE) 
+		for (node = friends->head; node != NULL; node = node->next)
+		{
+			if (!IsAlreadySeenFriend(already_seen_friends, node->entry->name, &is_already_seen))
+			{
+				LOG_ERROR("Failed to check for already seen friends");
+				return FALSE;
+			}
+			if (is_already_seen)
+			{   
+				//if there is more than one, we will chose the closer. 
+				if (!is_there_seen_friend) 
 				{    //this is the first time we reach seen friend,
 					// initialize min_friend_distance to it's distance
-			        is_there_seen_friend = TRUE;
+					is_there_seen_friend = TRUE;
 					min_friend_distance = node->entry->distance;
 					new_direction = node->entry->direction;
 					new_depth = SUBMARINE_LOW_DEPTH;
-			    }
-			else //second friend or more... 
-			{
-				if (node->entry->distance<min_friend_distance)
+				}
+				else //second friend or more... 
 				{
-					min_friend_distance = node->entry->distance;
-					new_direction = node->entry->direction;
+					if (node->entry->distance < min_friend_distance)
+					{
+						min_friend_distance = node->entry->distance;
+						new_direction = node->entry->direction;
+					}
 				}
 			}
 		}
 
-	}
 		if (is_there_seen_friend)
 		{
 			// fill submarine_command fields
@@ -213,11 +214,23 @@ BOOL HandleRadarPicture(Submarine *submarine, Radar *radar, AlreadySeenFriends *
 			//update submarine object fields
 			submarine->depth = submarine_command.new_depth;
 			submarine->direction = submarine_command.new_direction;
-
 		}
 	}
 
-// update already seen friends
+	WriteNewCommand(submarine->submarine_output_writer, &submarine_command);
+
+	// Warn threatened friends
+	for (node = friends->head; node != NULL; node = node->next)
+	{
+		if (node->entry->threat_distance != INVALID_DISTANCE)
+		{
+			WriteWarningMessage(submarine->submarine_output_writer, node->entry->name);
+		}
+	}
+
+	AddNewRound(submarine->submarine_output_writer);
+
+	// update already seen friends
 	if (!UpdateFriends(already_seen_friends, friends))
 	{
 		LOG_ERROR("failed to update already seen friends");

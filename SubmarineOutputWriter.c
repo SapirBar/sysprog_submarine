@@ -43,7 +43,7 @@ BOOL AddNewRound(
 		return FALSE;
 	}
 
-	fprintf(output_writer->output_file, "\r\n");
+	fprintf(output_writer->output_file, "\n");
 	return TRUE;
 }
 
@@ -59,7 +59,7 @@ BOOL WriteNewCommand(
 
 	fprintf(
 		output_writer->output_file,
-		"%d %d %s %d\r\n",
+		"%d %d %s %d\n",
 		command->new_direction,
 		command->new_depth,
 		FIRE_COMMANDS_STRINGS[command->fire_command],
@@ -80,7 +80,7 @@ BOOL WriteWarningMessage(
 
 	fprintf(
 		output_writer->output_file,
-		"Ship %s is in danger\r\n",
+		"Ship %s is in danger\n",
 		threatened_friend
 	);
 	return TRUE;

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include "Radar.h"
 #include "LinkedList.h"
@@ -163,14 +164,6 @@ BOOL CalculateThreats(
 				current_friend->entry->direction
 			);
 
-			if (curr_distance < min_distance) // found an enemy threats a friend ship closer to the friend ship (min_distance initialized to 1000) 
-			{
-				min_distance=curr_distance;
-				//update the fields in the friend entry in case there is an enemy threats
-				current_friend->entry->threat_distance = min_distance;
-				current_friend->entry->most_threatening_foe = current_foe->entry;
-			}
-
 			if (curr_distance ==  min_distance)
 			{    //compare between the relative angle of the current foe and the previos foe
 				//with the same distance from the friend ship
@@ -180,6 +173,14 @@ BOOL CalculateThreats(
 						//update the threated foe if his relative angle is smaller than the previous
 						current_friend->entry->most_threatening_foe = current_foe->entry;
 					}
+			}
+
+			if (curr_distance < min_distance) // found an enemy threats a friend ship closer to the friend ship (min_distance initialized to 1000) 
+			{
+				min_distance=curr_distance;
+				//update the fields in the friend entry in case there is an enemy threats
+				current_friend->entry->threat_distance = min_distance;
+				current_friend->entry->most_threatening_foe = current_foe->entry;
 			}
 			current_foe = current_foe->next;
 		}
@@ -196,9 +197,12 @@ double EuclideDistance (unsigned int dist1, unsigned int dir1, unsigned int dist
 {
 	double alpha = 0;
 	double euclide_distance = 0;
+	double temp = 0;
 	alpha = (double)RelativeAngle(dir1, dir2);
-	//computing the euclide distance using the cosinos statement. 
-	euclide_distance = sqrt(dist1*dist1 + dist2*dist2 - 2*dist1*dist2*cos(alpha));
+	//computing the euclide distance using the cosinos statement.
+	temp = cos(alpha*M_PI/180);
+	temp = dist1*dist1 + dist2*dist2 - 2*dist1*dist2*cos(alpha*M_PI/180);
+	euclide_distance = sqrt(dist1*dist1 + dist2*dist2 - 2*dist1*dist2*cos(alpha*M_PI/180));
 	return euclide_distance;
 }
 
@@ -241,7 +245,8 @@ BOOL IsSubmarineThreatened(
 }
 
 BOOL AreThereFoes (
-	Radar *radar
+	Radar *radar,
+	BOOL *are_there_foes
 )
 {
 	if (radar == NULL || radar->friends == NULL || radar->foes == NULL)
@@ -249,7 +254,8 @@ BOOL AreThereFoes (
       LOG_ERROR("failed to calculate threats: Radar picture is empty");
 	  return FALSE;
 	}
-	return (radar->foes->head == NULL);
+	*are_there_foes = (radar->foes->head == NULL);
+	return TRUE;
 }
 
 BOOL EliminateFoe(
@@ -270,6 +276,8 @@ BOOL EliminateFoe(
 		LOG_WARN("couldn't eliminate foe, no foe received");
 	    return FALSE;
 	}
+
+	LOG_INFO("Requested to eliminate foe %s", foe->name);
 
 	current_foe_node = (RadarListNode *)radar->foes->head;
 	while (current_foe_node != NULL)
