@@ -82,11 +82,12 @@ BOOL AddSeenFriend (SeenFriendsLinkedList * already_seen_list, char * name)
 	memcpy(new_seen_friend->entry, name, length_name+1);
 	if (AddLinkedListEntry((LinkedList *)already_seen_list,new_seen_friend) == FALSE)
 		{
-			LOG_ERROR("failed to add a foe to the list");
+			LOG_ERROR("failed to add a friend to the list");
 			free (new_seen_friend->entry); //free the memory allocated in this function and return
 			free (new_seen_friend);     
 			return FALSE;
 		}
+	LOG_INFO("added %s to seen friend list");
 	return TRUE;
 }
 
@@ -107,6 +108,7 @@ BOOL IsAlreadySeenFriend(
 		 {
 			 if (strcmp(name,(char *)seen_friend_curr->entry) == 0)
 				 {
+					 LOG_INFO("Already seen %s",name);
 					 break;
 			     }
 				 seen_friend_curr=seen_friend_curr->next; 

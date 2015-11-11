@@ -68,7 +68,7 @@ BOOL AddRadarObject(
 	int length_name = 0;
 	LinkedList *list_to_add_object = NULL;
 
-	LOG_INFO("AddRadarObject called");
+	LOG_INFO("AddRadarObject called for %s",name);
 
 	if ((radar == NULL) || (name == NULL))
 	{
