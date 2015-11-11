@@ -45,6 +45,7 @@ BOOL UpdateFriends(
 	for (friend_node_radar = friends_list->head; friend_node_radar != NULL; friend_node_radar = friend_node_radar ->next)
 	{
 		//if the name is not already in the list, we will add it
+		LOG_INFO ("want to add friend %s to seen friends", friend_node_radar->entry->name);
 		 if (!IsAlreadySeenFriend(already_seen_friends,friend_node_radar->entry->name))
 		 {    //add the friend name to the list
 			 if (AddSeenFriend(already_seen_friends->seen_friends,friend_node_radar->entry->name) == FALSE)
@@ -62,28 +63,21 @@ BOOL UpdateFriends(
 //Add a friend to the list
 BOOL AddSeenFriend (SeenFriendsLinkedList * already_seen_list, char * name)
 {
-	SeenFriendNode * new_seen_friend=NULL;
+	SeenFriend new_seen_friend=NULL;
 	int length_name = 0;
 	length_name = strlen (name);
 	//allocate memory for the object
-	new_seen_friend= (SeenFriendNode *) malloc (sizeof (SeenFriendNode *));
+			new_seen_friend = (SeenFriend) malloc (sizeof(char)*(length_name+1));
 	if (new_seen_friend == NULL)
 	{
-		LOG_ERROR("failed to allocate memory");
-		return FALSE; 
-	}
-	new_seen_friend->entry = (SeenFriend *) malloc (sizeof(char)*(length_name+1));
-	if (new_seen_friend->entry)
-	{
 		LOG_ERROR ("failed to allocate memory");
-		free (new_seen_friend);
 		return FALSE;
 	}
-	memcpy(new_seen_friend->entry, name, length_name+1);
+	memcpy(new_seen_friend, name, length_name+1);
 	if (AddLinkedListEntry((LinkedList *)already_seen_list,new_seen_friend) == FALSE)
 		{
 			LOG_ERROR("failed to add a friend to the list");
-			free (new_seen_friend->entry); //free the memory allocated in this function and return
+		//free the memory allocated in this function and return
 			free (new_seen_friend);     
 			return FALSE;
 		}
@@ -109,16 +103,14 @@ BOOL IsAlreadySeenFriend(
 			 if (strcmp(name,(char *)seen_friend_curr->entry) == 0)
 				 {
 					 LOG_INFO("Already seen %s",name);
-					 break;
+					 return TRUE;//the name are identical and we return TRUE
 			     }
 				 seen_friend_curr=seen_friend_curr->next; 
 		 }
-		//if the name is not exist,the pointer is pointing to the the end of the list
-if (seen_friend_curr = NULL)
-{
-	return FALSE;
-} //else, the name are identical and we break the loop with pointer diffrent from null
-	return TRUE;
+		//if the name is not exist,we return FALSE
+
+	return FALSE; 
+	
 }
 
 BOOL FreeAlreadySeenFriends (AlreadySeenFriends *already_seen_friends)
